@@ -10,3 +10,4 @@ pub mod extractor;
 pub mod downloader;
 pub mod profile;
 pub mod command;
+pub mod config;
