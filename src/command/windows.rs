@@ -35,19 +35,6 @@ And write the following thing:
     }
 }
 
-pub fn uninstall(m: &ArgMatches) {
-    let config = Config::from_matches(m);
-    let groonga_dir = format!("groonga-{}-{}",
-                              config.version.unwrap(),
-                              config.arch.unwrap());
-    if config.versions_dir.join(groonga_dir.clone()).exists() {
-        println!("Removing {}....", groonga_dir.clone());
-        fs::remove_dir_all(&config.versions_dir.join(groonga_dir))
-            .expect("Could not remove specified directory.");
-    }
-
-}
-
 pub fn install(m: &ArgMatches) {
     const BASE_URL: &'static str = "http://packages.groonga.org/windows/groonga";
     let config = Config::from_matches(m);
@@ -114,5 +101,17 @@ pub fn versions() {
     println!("\tsystem");
     for entry in names {
         println!("\t{}", entry);
+    }
+}
+
+pub fn uninstall(m: &ArgMatches) {
+    let config = Config::from_matches(m);
+    let groonga_dir = format!("groonga-{}-{}",
+                              config.version.unwrap(),
+                              config.arch.unwrap());
+    if config.versions_dir.join(groonga_dir.clone()).exists() {
+        println!("Removing {}....", groonga_dir.clone());
+        fs::remove_dir_all(&config.versions_dir.join(groonga_dir))
+            .expect("Could not remove specified directory.");
     }
 }
