@@ -17,7 +17,7 @@ pub fn init() {
     }
     fs::create_dir_all(&config.install_dir).expect("Could not create installation directory.");
     fs::create_dir_all(&config.shim_dir).expect("Could not create shims directory.");
-    fs::create_dir_all(&config.versions_dir).expect("Could not create shims directory.");
+    fs::create_dir_all(&config.versions_dir).expect("Could not create versions directory.");
     if !env::home_dir()
         .unwrap()
         .join("Documents")
