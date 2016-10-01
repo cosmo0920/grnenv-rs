@@ -33,6 +33,7 @@ then,
 
 ```
 PS> grnenv-rs install VERSION [--arch (x86|x64)]
+PS> grnenv-rs switch VERSION [--arch (x86|x64)]
 ```
 
 Finally, restart powershell and use specified version of Groonga.

@@ -59,8 +59,6 @@ pub fn install(m: &ArgMatches) {
                                              download_dir)
         .expect("Failed to download");
     extractor::extract_zip(&filename, &config.versions_dir);
-    profile::create_profile_source(&config.shim_dir, &groonga_dir, &config.versions_dir)
-        .expect("Could not create source-groonga.ps1");
 }
 
 pub fn switch(m: &ArgMatches) {
