@@ -34,6 +34,7 @@ fn cli() -> App<'static, 'static> {
                 .value_name("ARCH")
                 .help("Select architectures. e.g.) x86, x64")
                 .takes_value(true)))
+        .subcommand(SubCommand::with_name("versions").about("display installed Groonga versions"))
 }
 
 #[cfg(not(windows))]
@@ -48,6 +49,7 @@ fn default_main() {
         ("init", _) => command::windows::init(),
         ("install", Some(m)) => command::windows::install(m),
         ("switch", Some(m)) => command::windows::switch(m),
+        ("versions", _) => command::windows::versions(),
         (_, _) => unreachable!(),
     }
 }
