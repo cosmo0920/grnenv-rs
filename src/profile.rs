@@ -27,3 +27,12 @@ pub fn create_profile_source(shim_dir: &PathBuf,
     }
     f.sync_data()
 }
+
+pub fn remove_grnenv_profile(shim_dir: &PathBuf) -> Result<(), io::Error> {
+    if shim_dir.join("source-groonga.ps1").exists() {
+        let _ = try!(fs::remove_file(shim_dir.join("source-groonga.ps1")));
+    }
+    // Create an empty file to prevent reading source-groonga.ps1 error.
+    let _ = try!(fs::File::create(shim_dir.join("source-groonga.ps1").to_str().unwrap()));
+    Ok(())
+}

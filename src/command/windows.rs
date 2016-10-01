@@ -66,9 +66,15 @@ pub fn switch(m: &ArgMatches) {
     println!("Value for architecture: {}", config.arch.clone().unwrap());
     println!("Using Groonga version: {}", config.version.clone().unwrap());
     let groonga_dir = format!("groonga-{}-{}", config.version.unwrap(), config.arch.unwrap());
-
-    profile::create_profile_source(&config.shim_dir, &groonga_dir, &config.versions_dir)
-        .expect("Could not create source-groonga.ps1");
+    match config.version {
+        Some("system") => {
+            profile::remove_grnenv_profile(&config.shim_dir).unwrap();
+            return ()
+        },
+        Some(_) => profile::create_profile_source(&config.shim_dir, &groonga_dir, &config.versions_dir)
+            .expect("Could not create source-groonga.ps1"),
+        None => unreachable!(),
+    }
 }
 
 pub fn versions() {
@@ -85,6 +91,7 @@ pub fn versions() {
         .collect::<Vec<String>>();
 
     println!("Installed Groonga:");
+    println!("\tsystem");
     for entry in names {
         println!("\t{}", entry);
     }
