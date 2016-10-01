@@ -12,7 +12,7 @@ use downloader;
 use profile;
 
 pub fn init() {
-    let install_dir = util::obtain_install_path();
+    let install_dir = util::obtain_install_base_path();
     let shim_dir = install_dir.join("shims").join("bin");
     if install_dir.exists() || shim_dir.exists() {
         println!("Already initalized. Reinitializing....");
@@ -47,12 +47,13 @@ pub fn install(m: &ArgMatches) {
     let version = m.value_of("VERSION").unwrap();
     println!("Value for architecture: {}", arch);
     println!("Obtaining Groonga version: {}", version);
-    let install_dir = util::obtain_install_path();
-    let shim_dir = install_dir.join("shims").join("bin");
+    let install_base_dir = util::obtain_install_base_path();
+    let shim_dir = install_base_dir.join("shims").join("bin");
 
+    let groonga_versioned_dir = util::obtain_groonga_versioned_path();
     let groonga_dir = format!("groonga-{}-{}", version, arch);
     let groonga_binary = format!("{}.zip", groonga_dir.clone());
-    if install_dir.join(groonga_dir.clone()).exists() {
+    if groonga_versioned_dir.join(groonga_dir.clone()).exists() {
         println!("Already installed. Ready to use it.");
         return ();
     }
@@ -66,8 +67,8 @@ pub fn install(m: &ArgMatches) {
                                              &*format!("{}/{}", BASE_URL, groonga_binary),
                                              download_dir)
         .expect("Failed to download");
-    extractor::extract_zip(&filename, &install_dir);
-    profile::create_profile_source(&shim_dir, &groonga_dir, &install_dir)
+    extractor::extract_zip(&filename, &groonga_versioned_dir);
+    profile::create_profile_source(&shim_dir, &groonga_dir, &groonga_versioned_dir)
         .expect("Could not create source-groonga.ps1");
 }
 
@@ -80,11 +81,12 @@ pub fn switch(m: &ArgMatches) {
     };
     let version = m.value_of("VERSION").unwrap();
     println!("Value for architecture: {}", arch);
-    println!("Obtaining Groonga version: {}", version);
-    let install_dir = util::obtain_install_path();
+    println!("Using Groonga version: {}", version);
+    let install_dir = util::obtain_install_base_path();
+    let groonga_versioned_dir = util::obtain_groonga_versioned_path();
     let shim_dir = install_dir.join("shims").join("bin");
     let groonga_dir = format!("groonga-{}-{}", version, arch);
 
-    profile::create_profile_source(&shim_dir, &groonga_dir, &install_dir)
+    profile::create_profile_source(&shim_dir, &groonga_dir, &groonga_versioned_dir)
         .expect("Could not create source-groonga.ps1");
 }

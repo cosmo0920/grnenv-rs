@@ -3,7 +3,12 @@ use std::path::PathBuf;
 #[cfg(windows)]
 use kernel32::GetNativeSystemInfo;
 
-pub fn obtain_install_path() -> PathBuf {
+pub fn obtain_groonga_versioned_path() -> PathBuf {
+    let base_dir = env::home_dir().unwrap();
+    base_dir.join(".groonga").join("versions")
+}
+
+pub fn obtain_install_base_path() -> PathBuf {
     let base_dir = env::home_dir().unwrap();
     base_dir.join(".groonga")
 }
