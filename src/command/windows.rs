@@ -1,6 +1,7 @@
 use std::env;
 use std::fs;
 use std::path::Path;
+use std::process;
 
 use clap::ArgMatches;
 use tempdir::TempDir;
@@ -113,5 +114,8 @@ pub fn uninstall(m: &ArgMatches) {
         println!("Removing {}....", groonga_dir.clone());
         fs::remove_dir_all(&config.versions_dir.join(groonga_dir))
             .expect("Could not remove specified directory.");
+    } else {
+        println!("{} is not installed!", groonga_dir.clone());
+        process::exit(1);
     }
 }
