@@ -12,7 +12,31 @@ pub struct Config<'a> {
     pub version: Option<&'a str>,
 }
 
+impl<'a> Default for Config<'a> {
+    fn default() -> Config<'a> {
+        Config {
+            install_dir: PathBuf::from(""),
+            shim_dir: PathBuf::from(""),
+            versions_dir: PathBuf::from(""),
+            arch: None,
+            version: None,
+        }
+    }
+}
+
 impl<'a> Config<'a> {
+    pub fn new() -> Config<'a> {
+        let install_dir = util::obtain_install_base_path();
+        let shim_dir = install_dir.join("shims").join("bin");
+        let groonga_versioned_dir = util::obtain_groonga_versioned_path();
+        Config {
+            install_dir: install_dir,
+            shim_dir: shim_dir,
+            versions_dir: groonga_versioned_dir,
+            ..Config::default()
+        }
+    }
+
     pub fn from_matches(m: &'a ArgMatches) -> Config<'a> {
         let install_dir = util::obtain_install_base_path();
         let shim_dir = install_dir.join("shims").join("bin");

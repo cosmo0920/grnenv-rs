@@ -14,13 +14,12 @@ use profile;
 use config::Config;
 
 pub fn init() {
-    let install_dir = util::obtain_install_base_path();
-    let shim_dir = install_dir.join("shims").join("bin");
-    if install_dir.exists() || shim_dir.exists() {
+    let config = Config::new();
+    if config.install_dir.exists() || config.shim_dir.exists() {
         println!("Already initalized. Reinitializing....");
     }
-    fs::create_dir_all(&install_dir).expect("Could not create installation directory.");
-    fs::create_dir_all(&shim_dir).expect("Could not create shims directory.");
+    fs::create_dir_all(&config.install_dir).expect("Could not create installation directory.");
+    fs::create_dir_all(&config.shim_dir).expect("Could not create shims directory.");
     if !env::home_dir()
         .unwrap()
         .join("Documents")
