@@ -48,7 +48,11 @@ fn cli() -> App<'static, 'static> {
 
 #[cfg(not(windows))]
 fn default_main() {
-    panic!("Unsupported!");
+    let matches = cli().get_matches();
+    match matches.subcommand() {
+        ("versions", _) => command::common::versions(),
+        (_, _) => unreachable!(),
+    }
 }
 
 #[cfg(windows)]
@@ -58,7 +62,7 @@ fn default_main() {
         ("init", _) => command::windows::init(),
         ("install", Some(m)) => command::windows::install(m),
         ("switch", Some(m)) => command::windows::switch(m),
-        ("versions", _) => command::windows::versions(),
+        ("versions", _) => command::common::versions(),
         ("uninstall", Some(m)) => command::windows::uninstall(m),
         (_, _) => unreachable!(),
     }

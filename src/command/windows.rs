@@ -1,12 +1,10 @@
 use std::env;
 use std::fs;
-use std::path::Path;
 use std::process;
 
 use clap::ArgMatches;
 use tempdir::TempDir;
 use hyper::Client;
-use util;
 use extractor;
 use downloader;
 use profile;
@@ -82,26 +80,6 @@ pub fn switch(m: &ArgMatches) {
                 .expect("Could not create source-groonga.ps1")
         }
         None => unreachable!(),
-    }
-}
-
-pub fn versions() {
-    let groonga_versioned_dir = util::obtain_groonga_versioned_path();
-    let paths = fs::read_dir(&Path::new(&groonga_versioned_dir)).unwrap();
-
-    let names = paths.filter_map(|entry| {
-            entry.ok().and_then(|e| {
-                e.path()
-                    .file_name()
-                    .and_then(|n| n.to_str().map(|s| String::from(s)))
-            })
-        })
-        .collect::<Vec<String>>();
-
-    println!("Installed Groonga:");
-    println!("\tsystem");
-    for entry in names {
-        println!("\t{}", entry);
     }
 }
 
