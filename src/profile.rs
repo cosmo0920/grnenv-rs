@@ -9,7 +9,7 @@ pub fn create_profile_source(shim_dir: &PathBuf,
                              install_dir: &PathBuf)
                              -> Result<(), io::Error> {
     if shim_dir.join("source-groonga.ps1").exists() {
-        fs::remove_file(shim_dir.join("source-groonga.ps1")).unwrap();
+        let _ = try!(fs::remove_file(shim_dir.join("source-groonga.ps1")));
     }
     let mut f = fs::File::create(shim_dir.join("source-groonga.ps1").to_str().unwrap())
         .expect("Could not create a powershell setting file.");
