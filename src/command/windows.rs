@@ -40,9 +40,13 @@ And write the following thing:
 pub fn install(m: &ArgMatches) {
     const BASE_URL: &'static str = "http://packages.groonga.org/windows/groonga";
     let config = Config::from_matches(m);
-    println!("Value for architecture: {}", config.arch.clone().expect("unsupported platform"));
-    println!("Obtaining Groonga version: {}", config.version.clone().unwrap());
-    let groonga_dir = format!("groonga-{}-{}", config.version.unwrap(), config.arch.unwrap());
+    println!("Value for architecture: {}",
+             config.arch.clone().expect("unsupported platform"));
+    println!("Obtaining Groonga version: {}",
+             config.version.clone().unwrap());
+    let groonga_dir = format!("groonga-{}-{}",
+                              config.version.unwrap(),
+                              config.arch.unwrap());
     let groonga_binary = format!("{}.zip", groonga_dir.clone());
     if config.versions_dir.join(groonga_dir.clone()).exists() {
         println!("Already installed. Ready to use it.");
@@ -63,16 +67,21 @@ pub fn install(m: &ArgMatches) {
 
 pub fn switch(m: &ArgMatches) {
     let config = Config::from_matches(m);
-    println!("Value for architecture: {}", config.arch.clone().expect("unsupported platform"));
+    println!("Value for architecture: {}",
+             config.arch.clone().expect("unsupported platform"));
     println!("Using Groonga version: {}", config.version.clone().unwrap());
-    let groonga_dir = format!("groonga-{}-{}", config.version.unwrap(), config.arch.unwrap());
+    let groonga_dir = format!("groonga-{}-{}",
+                              config.version.unwrap(),
+                              config.arch.unwrap());
     match config.version {
         Some("system") => {
             profile::remove_grnenv_profile(&config.shim_dir).unwrap();
-            return ()
-        },
-        Some(_) => profile::create_profile_source(&config.shim_dir, &groonga_dir, &config.versions_dir)
-            .expect("Could not create source-groonga.ps1"),
+            return ();
+        }
+        Some(_) => {
+            profile::create_profile_source(&config.shim_dir, &groonga_dir, &config.versions_dir)
+                .expect("Could not create source-groonga.ps1")
+        }
         None => unreachable!(),
     }
 }
