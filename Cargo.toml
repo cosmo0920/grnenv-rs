@@ -1,0 +1,17 @@
+[package]
+name = "grnenv-rs"
+version = "0.1.0"
+authors = ["Hiroshi Hatake <cosmo0920.wp@gmail.com>"]
+
+[lib]
+name = "grnenvlib"
+path = "src/lib.rs"
+
+[dependencies]
+tempdir = "~0.3"
+hyper = "~0.9.10"
+zip = "~0.1"
+clap = "~2.13"
+
+[target.'cfg(windows)'.dependencies]
+kernel32-sys = "~0.2"
