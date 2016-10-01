@@ -67,7 +67,8 @@ pub fn install(m: &ArgMatches) {
                                              download_dir)
         .expect("Failed to download");
     extractor::extract_zip(&filename, &install_dir);
-    profile::create_profile_source(&shim_dir, &groonga_dir, &install_dir);
+    profile::create_profile_source(&shim_dir, &groonga_dir, &install_dir)
+        .expect("Could not create source-groonga.ps1");
 }
 
 pub fn switch(m: &ArgMatches) {
@@ -84,5 +85,6 @@ pub fn switch(m: &ArgMatches) {
     let shim_dir = install_dir.join("shims").join("bin");
     let groonga_dir = format!("groonga-{}-{}", version, arch);
 
-    profile::create_profile_source(&shim_dir, &groonga_dir, &install_dir);
+    profile::create_profile_source(&shim_dir, &groonga_dir, &install_dir)
+        .expect("Could not create source-groonga.ps1");
 }
