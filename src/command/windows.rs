@@ -40,7 +40,7 @@ And write the following thing:
 pub fn install(m: &ArgMatches) {
     const BASE_URL: &'static str = "http://packages.groonga.org/windows/groonga";
     let config = Config::from_matches(m);
-    println!("Value for architecture: {}", config.arch.clone().unwrap());
+    println!("Value for architecture: {}", config.arch.clone().expect("unsupported platform"));
     println!("Obtaining Groonga version: {}", config.version.clone().unwrap());
     let groonga_dir = format!("groonga-{}-{}", config.version.unwrap(), config.arch.unwrap());
     let groonga_binary = format!("{}.zip", groonga_dir.clone());
@@ -63,7 +63,7 @@ pub fn install(m: &ArgMatches) {
 
 pub fn switch(m: &ArgMatches) {
     let config = Config::from_matches(m);
-    println!("Value for architecture: {}", config.arch.clone().unwrap());
+    println!("Value for architecture: {}", config.arch.clone().expect("unsupported platform"));
     println!("Using Groonga version: {}", config.version.clone().unwrap());
     let groonga_dir = format!("groonga-{}-{}", config.version.unwrap(), config.arch.unwrap());
     match config.version {
