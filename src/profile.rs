@@ -2,6 +2,7 @@ use std::fs;
 use std::io::prelude::*;
 use std::io;
 use std::path::PathBuf;
+use std::process;
 
 pub fn create_profile_source(shim_dir: &PathBuf,
                              groonga_dir: &String,
@@ -14,6 +15,10 @@ pub fn create_profile_source(shim_dir: &PathBuf,
         .expect("Could not create a powershell setting file.");
     let installed_groonga = install_dir.join(groonga_dir)
         .join("bin");
+    if !installed_groonga.exists() {
+        println!("Specified version is not installed.");
+        process::exit(1);
+    }
     let contents = format!("$Env:Path = \"{};\" + $Env:Path",
                            installed_groonga.display());
     match f.write_all(&contents.as_bytes()) {
