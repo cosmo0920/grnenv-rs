@@ -35,6 +35,15 @@ fn cli() -> App<'static, 'static> {
                 .help("Select architectures. e.g.) x86, x64")
                 .takes_value(true)))
         .subcommand(SubCommand::with_name("versions").about("Display installed Groonga versions"))
+        .subcommand(SubCommand::with_name("uninstall")
+            .about("Uninstall a given Groonga version and arch")
+            .arg(Arg::with_name("VERSION").required(true))
+            .arg(Arg::with_name("arch")
+                .short("a")
+                .long("arch")
+                .value_name("ARCH")
+                .help("Select architectures. e.g.) x86, x64")
+                .takes_value(true)))
 }
 
 #[cfg(not(windows))]
@@ -50,6 +59,7 @@ fn default_main() {
         ("install", Some(m)) => command::windows::install(m),
         ("switch", Some(m)) => command::windows::switch(m),
         ("versions", _) => command::windows::versions(),
+        ("uninstall", Some(m)) => command::windows::uninstall(m),
         (_, _) => unreachable!(),
     }
 }
