@@ -26,7 +26,7 @@ fn cli() -> App<'static, 'static> {
                 .help("Select architectures. e.g.) x86, x64")
                 .takes_value(true)))
         .subcommand(SubCommand::with_name("switch")
-            .about("switch Groonga with given version and arch")
+            .about("Switch Groonga with given version and arch")
             .arg(Arg::with_name("VERSION").required(true))
             .arg(Arg::with_name("arch")
                 .short("a")
@@ -34,7 +34,7 @@ fn cli() -> App<'static, 'static> {
                 .value_name("ARCH")
                 .help("Select architectures. e.g.) x86, x64")
                 .takes_value(true)))
-        .subcommand(SubCommand::with_name("versions").about("display installed Groonga versions"))
+        .subcommand(SubCommand::with_name("versions").about("Display installed Groonga versions"))
 }
 
 #[cfg(not(windows))]
