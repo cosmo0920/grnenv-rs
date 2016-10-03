@@ -1,7 +1,16 @@
 use std::env;
 use std::fs;
+use std::io;
+use std::process;
+use std::process::{Command, Stdio};
+use sys_info;
 
+use clap::ArgMatches;
+use tempdir::TempDir;
+use hyper::Client;
 use config::Config;
+use extractor;
+use downloader;
 
 pub fn init() {
     let config = Config::new();
@@ -19,5 +28,121 @@ pub fn init() {
 
 . $HOME\.groonga\shims\bin\source-groonga.sh
 "#)
+    }
+}
+
+pub fn install(m: &ArgMatches) {
+    const BASE_URL: &'static str = "http://packages.groonga.org/source/groonga";
+    let config = Config::from_matches(m);
+    println!("Obtaining Groonga version: {}",
+             config.version.clone().unwrap());
+    let groonga_dir = format!("groonga-{}",
+                              config.version.unwrap());
+    let groonga_source = format!("{}.zip", groonga_dir.clone());
+    if config.versions_dir.join(groonga_dir.clone()).exists() {
+        println!("Already installed. Ready to use it.");
+        return ();
+    }
+
+    let download_dir = TempDir::new("grnenv-rs")
+        .expect("Could not create temp dir.")
+        .into_path();
+
+    let client = Client::new();
+    let filename = downloader::file_download(&client,
+                                             &*format!("{}/{}", BASE_URL, groonga_source),
+                                             download_dir.clone())
+        .expect("Failed to download");
+    extractor::extract_zip(&filename, &download_dir);
+    assert!(env::set_current_dir(&download_dir.join(groonga_dir.clone())).is_ok());
+
+    // TODO: Should specify on Linux?
+    match inner_autoreconf() {
+        Ok(o) => println!("{}", o),
+        Err(_) => {
+            println!("Could not execute autoreconf -v.");
+            process::exit(1);
+        }
+    }
+
+    match inner_configure(&config, groonga_dir.clone()) {
+        Ok(o) => println!("{}", o),
+        Err(_) => {
+            println!("Could not configure.");
+            process::exit(1);
+        }
+    }
+
+    match inner_build() {
+        Ok(o) => println!("{}", o),
+        Err(_) => {
+            println!("Could not build.");
+            process::exit(1);
+        }
+    }
+
+    match inner_install() {
+        Ok(o) => println!("{}", o),
+        Err(_) => {
+            println!("Could not install.");
+            process::exit(1);
+        }
+    }
+
+    #[cfg(target_os = "macos")]
+    fn inner_autoreconf() -> Result<process::ExitStatus, io::Error> {
+        let mut cmd =
+            Command::new("autoreconf")
+            .args(&["-v"])
+            .stdout(Stdio::inherit())
+            .stderr(Stdio::inherit())
+            .spawn()
+            .unwrap_or_else(|e| { panic!("failed to execute child: {}", e) });
+        let status = cmd.wait();
+        status
+    }
+
+    #[cfg(not(target_os = "macos"))]
+    fn inner_autoreconf() -> Result<u32, io::Error> {
+        Ok(0)
+    }
+
+    fn inner_configure(config: &Config, groonga_dir: String) -> Result<process::ExitStatus, io::Error> {
+        println!("{}",config.versions_dir.join(groonga_dir.clone()).display());
+        let mut cmd =
+            Command::new("./configure")
+            .args(&[&*format!("--prefix={}",
+                              config.versions_dir.join(groonga_dir.clone()).display()),
+            "PKG_CONFIG_PATH=/usr/local/opt/openssl/lib/pkgconfig/:$PKG_CONFIG_PATH"])
+            .stdout(Stdio::inherit())
+            .stderr(Stdio::inherit())
+            .spawn()
+            .unwrap_or_else(|e| { panic!("failed to execute child: {}", e) });
+        let status = cmd.wait();
+        status
+    }
+
+    fn inner_build() -> Result<process::ExitStatus, io::Error> {
+        let mut cmd =
+            Command::new("make")
+            .args(&["-j", &*format!("{}", sys_info::cpu_num().unwrap_or(2))])
+            .stdout(Stdio::inherit())
+            .stderr(Stdio::inherit())
+            .spawn()
+            .unwrap_or_else(|e| { panic!("failed to execute child: {}", e) });
+        let status = cmd.wait();
+        status
+    }
+
+    fn inner_install() -> Result<process::ExitStatus, io::Error> {
+        let mut cmd =
+            Command::new("make")
+            .args(&["install"])
+            .stdout(Stdio::inherit())
+            .stderr(Stdio::inherit())
+            .spawn()
+            .unwrap_or_else(|e| { panic!("failed to execute child: {}", e) });
+        let status = cmd.wait();
+        status
     }
 }

@@ -51,6 +51,7 @@ fn default_main() {
     let matches = cli().get_matches();
     match matches.subcommand() {
         ("init", _) => command::unix::init(),
+        ("install", Some(m)) => command::unix::install(m),
         ("versions", _) => command::common::versions(),
         (_, _) => unreachable!(),
     }
