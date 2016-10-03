@@ -36,5 +36,18 @@ pub fn obtain_arch() -> Option<String> {
 
 #[cfg(not(windows))]
 pub fn obtain_arch() -> Option<String> {
-    None
+    use libc;
+    use std::mem;
+    use std::ffi::CStr;
+
+    let mut sys_info;
+    let machine = unsafe {
+        sys_info = mem::zeroed();
+        if libc::uname(&mut sys_info) != 0 {
+            return None;
+        }
+
+        CStr::from_ptr(sys_info.machine.as_ptr()).to_bytes()
+    };
+    Some(String::from_utf8_lossy(machine).into_owned())
 }

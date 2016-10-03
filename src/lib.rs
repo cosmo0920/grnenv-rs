@@ -2,6 +2,10 @@ extern crate tempdir;
 extern crate hyper;
 extern crate zip;
 extern crate clap;
+#[cfg(not(windows))]
+extern crate libc;
+#[cfg(not(windows))]
+extern crate sys_info;
 #[cfg(windows)]
 extern crate kernel32;
 
