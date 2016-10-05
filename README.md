@@ -27,6 +27,14 @@ https://github.com/sfackler/rust-openssl#windows
 * openssl development package (libssl-dev or openssl-devel like package)
 * rust compiler (installed with rustup)
 
+#### Note
+
+If you installed openssl library in non-standard place, please specify `OPENSSL_PKG_CONFIG_PATH` environment variable like this:
+
+```bash
+$ export OPENSSL_PKG_CONFIG_PATH=/path/to/installed/openssl
+```
+
 ## Usage
 
 ### For Windows

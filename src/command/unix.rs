@@ -108,13 +108,19 @@ pub fn install(m: &ArgMatches) {
         Ok(0)
     }
 
+    // mainly used for macOS.
+    fn openssl_pkg_config_path() -> String {
+        let key = "OPENSSL_PKG_CONFIG_PATH";
+        env::var(key).unwrap_or("/usr/local/opt/openssl/lib/pkgconfig".to_string())
+    }
+
     fn inner_configure(config: &Config, groonga_dir: String) -> Result<process::ExitStatus, io::Error> {
         println!("{}",config.versions_dir.join(groonga_dir.clone()).display());
         let mut cmd =
             Command::new("./configure")
             .args(&[&*format!("--prefix={}",
                               config.versions_dir.join(groonga_dir.clone()).display()),
-            "PKG_CONFIG_PATH=/usr/local/opt/openssl/lib/pkgconfig/:$PKG_CONFIG_PATH"])
+            &*format!("PKG_CONFIG_PATH={}:$PKG_CONFIG_PATH", openssl_pkg_config_path())])
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
             .spawn()
