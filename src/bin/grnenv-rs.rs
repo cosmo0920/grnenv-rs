@@ -54,6 +54,7 @@ fn default_main() {
         ("install", Some(m)) => command::unix::install(m),
         ("switch", Some(m)) => command::unix::switch(m),
         ("versions", _) => command::common::versions(),
+        ("uninstall", Some(m)) => command::unix::uninstall(m),
         (_, _) => unreachable!(),
     }
 }

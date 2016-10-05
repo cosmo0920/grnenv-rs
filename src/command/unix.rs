@@ -165,3 +165,17 @@ pub fn switch(m: &ArgMatches) {
         None => unreachable!(),
     }
 }
+
+pub fn uninstall(m: &ArgMatches) {
+    let config = Config::from_matches(m);
+    let groonga_dir = format!("groonga-{}",
+                              config.version.unwrap());
+    if config.versions_dir.join(groonga_dir.clone()).exists() {
+        println!("Removing {}....", groonga_dir.clone());
+        fs::remove_dir_all(&config.versions_dir.join(groonga_dir))
+            .expect("Could not remove specified directory.");
+    } else {
+        println!("{} is not installed!", groonga_dir.clone());
+        process::exit(1);
+    }
+}
