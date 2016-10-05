@@ -5,6 +5,28 @@ grnenv-rs is a tool to switch using multiple Groonga versions.
 
 Currently, only supported for Windows.
 
+## Prerequisites
+
+### Windows + just download executables
+
+* Perhaps, Visual C++ Redistributable for Visual Studio 2015 is needed
+
+Binary upload plan is TBD.
+
+### Windows + build yourself
+
+* rustup
+* [OpenSSL for MSVC](https://slproweb.com/products/Win32OpenSSL.html)
+
+And follow the descriptions:
+
+https://github.com/sfackler/rust-openssl#windows
+
+### *nix
+
+* openssl development package (libssl-dev or openssl-devel like package)
+* rust compiler (installed with rustup)
+
 ## Usage
 
 ### For Windows
@@ -40,7 +62,27 @@ Finally, restart powershell and use specified version of Groonga.
 
 ### For *nix environment
 
-Not supported, but patches are welcome!
+git clone and,
+
+```bash
+$ cargo install
+$ grnenv-rs init
+```
+
+And write the following into .bash\_profile or .zsh\_profile etc.:
+
+```
+. $HOME/.groonga/shims/bin/source-groonga.sh
+```
+
+then,
+
+```
+$ grnenv-rs install VERSION
+$ grnenv-rs switch VERSION
+```
+
+Finally, restart your shell and use specified version of Groonga.
 
 ## LICENSE
 
