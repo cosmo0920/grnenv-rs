@@ -11,6 +11,7 @@ use hyper::Client;
 use config::Config;
 use extractor;
 use downloader;
+use profile;
 
 pub fn init() {
     let config = Config::new();
@@ -144,5 +145,23 @@ pub fn install(m: &ArgMatches) {
             .unwrap_or_else(|e| { panic!("failed to execute child: {}", e) });
         let status = cmd.wait();
         status
+    }
+}
+
+pub fn switch(m: &ArgMatches) {
+    let config = Config::from_matches(m);
+    println!("Using Groonga version: {}", config.version.clone().unwrap());
+    let groonga_dir = format!("groonga-{}",
+                              config.version.unwrap());
+    match config.version {
+        Some("system") => {
+            profile::unix::remove_grnenv_profile(&config.shim_dir).unwrap();
+            return ();
+        }
+        Some(_) => {
+            profile::unix::create_profile_source(&config.shim_dir, &groonga_dir, &config.versions_dir)
+                .expect("Could not create source-groonga.sh")
+        }
+        None => unreachable!(),
     }
 }

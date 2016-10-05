@@ -52,6 +52,7 @@ fn default_main() {
     match matches.subcommand() {
         ("init", _) => command::unix::init(),
         ("install", Some(m)) => command::unix::install(m),
+        ("switch", Some(m)) => command::unix::switch(m),
         ("versions", _) => command::common::versions(),
         (_, _) => unreachable!(),
     }

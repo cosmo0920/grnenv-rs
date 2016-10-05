@@ -12,14 +12,14 @@ pub fn create_profile_source(shim_dir: &PathBuf,
         let _ = try!(fs::remove_file(shim_dir.join("source-groonga.sh")));
     }
     let mut f = fs::File::create(shim_dir.join("source-groonga.sh").to_str().unwrap())
-        .expect("Could not create a powershell setting file.");
+        .expect("Could not create a shell setting file.");
     let installed_groonga = install_dir.join(groonga_dir)
         .join("bin");
     if !installed_groonga.exists() {
         println!("Specified version is not installed.");
         process::exit(1);
     }
-    let contents = format!("export $PATH=\"{}:$PATH\"",
+    let contents = format!("export PATH={}:$PATH",
                            installed_groonga.display());
     match f.write_all(&contents.as_bytes()) {
         Ok(_) => return Ok(()),
