@@ -1,6 +1,7 @@
 extern crate tempdir;
 extern crate hyper;
 extern crate grnenvlib;
+#[macro_use]
 extern crate clap;
 
 use clap::{Arg, App, SubCommand};
@@ -12,8 +13,8 @@ fn main() {
 
 fn cli() -> App<'static, 'static> {
     App::new("grnenv-rs")
-        .version("0.1.0")
-        .author("Hiroshi Hatake <cosmo0920.wp@gmail.com>")
+        .version(crate_version!())
+        .author(crate_authors!())
         .about("A tiny tool for obtain and select multiple Groonga.")
         .subcommand(SubCommand::with_name("init").about("Prepare grnenv-rs."))
         .subcommand(SubCommand::with_name("install")
