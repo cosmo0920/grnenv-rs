@@ -3,7 +3,7 @@ grnenv-rs
 
 grnenv-rs is a tool to switch using multiple Groonga versions.
 
-Currently, only supported for Windows.
+Currently, only confirmed to work on Windows 10 and macOS Sierra.
 
 ## Prerequisites
 
