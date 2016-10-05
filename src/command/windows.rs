@@ -73,11 +73,11 @@ pub fn switch(m: &ArgMatches) {
                               config.arch.unwrap());
     match config.version {
         Some("system") => {
-            profile::remove_grnenv_profile(&config.shim_dir).unwrap();
+            profile::windows::remove_grnenv_profile(&config.shim_dir).unwrap();
             return ();
         }
         Some(_) => {
-            profile::create_profile_source(&config.shim_dir, &groonga_dir, &config.versions_dir)
+            profile::windows::create_profile_source(&config.shim_dir, &groonga_dir, &config.versions_dir)
                 .expect("Could not create source-groonga.ps1")
         }
         None => unreachable!(),
