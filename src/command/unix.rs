@@ -120,7 +120,7 @@ pub fn install(m: &ArgMatches) {
         let mut cmd = Command::new("./configure")
             .args(&[&*format!("--prefix={}",
                               config.versions_dir.join(groonga_dir.clone()).display()),
-                    &*format!("PKG_CONFIG_PATH={}:$PKG_CONFIG_PATH",
+                    &*format!("PKG_CONFIG_PATH={}",
                               openssl_pkg_config_path())])
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
