@@ -8,7 +8,7 @@ pub fn create_profile_source(shim_dir: &PathBuf,
                              groonga_dir: &String,
                              install_dir: &PathBuf)
                              -> Result<(), io::Error> {
-    if shim_dir.join("source-groonga.ps1").exists() {
+    if shim_dir.join("source-groonga.sh").exists() {
         let _ = try!(fs::remove_file(shim_dir.join("source-groonga.sh")));
     }
     let mut f = fs::File::create(shim_dir.join("source-groonga.sh").to_str().unwrap())
