@@ -37,8 +37,7 @@ pub fn install(m: &ArgMatches) {
     let config = Config::from_matches(m);
     println!("Obtaining Groonga version: {}",
              config.version.clone().unwrap());
-    let groonga_dir = format!("groonga-{}",
-                              config.version.unwrap());
+    let groonga_dir = format!("groonga-{}", config.version.unwrap());
     let groonga_source = format!("{}.zip", groonga_dir.clone());
     if config.versions_dir.join(groonga_dir.clone()).exists() {
         println!("Already installed. Ready to use it.");
@@ -92,13 +91,12 @@ pub fn install(m: &ArgMatches) {
 
     #[cfg(target_os = "macos")]
     fn inner_autoreconf() -> Result<process::ExitStatus, io::Error> {
-        let mut cmd =
-            Command::new("autoreconf")
+        let mut cmd = Command::new("autoreconf")
             .args(&["-v"])
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
             .spawn()
-            .unwrap_or_else(|e| { panic!("failed to execute child: {}", e) });
+            .unwrap_or_else(|e| panic!("failed to execute child: {}", e));
         let status = cmd.wait();
         status
     }
@@ -114,41 +112,42 @@ pub fn install(m: &ArgMatches) {
         env::var(key).unwrap_or("/usr/local/opt/openssl/lib/pkgconfig".to_string())
     }
 
-    fn inner_configure(config: &Config, groonga_dir: String) -> Result<process::ExitStatus, io::Error> {
-        println!("{}",config.versions_dir.join(groonga_dir.clone()).display());
-        let mut cmd =
-            Command::new("./configure")
+    fn inner_configure(config: &Config,
+                       groonga_dir: String)
+                       -> Result<process::ExitStatus, io::Error> {
+        println!("{}",
+                 config.versions_dir.join(groonga_dir.clone()).display());
+        let mut cmd = Command::new("./configure")
             .args(&[&*format!("--prefix={}",
                               config.versions_dir.join(groonga_dir.clone()).display()),
-            &*format!("PKG_CONFIG_PATH={}:$PKG_CONFIG_PATH", openssl_pkg_config_path())])
+                    &*format!("PKG_CONFIG_PATH={}:$PKG_CONFIG_PATH",
+                              openssl_pkg_config_path())])
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
             .spawn()
-            .unwrap_or_else(|e| { panic!("failed to execute child: {}", e) });
+            .unwrap_or_else(|e| panic!("failed to execute child: {}", e));
         let status = cmd.wait();
         status
     }
 
     fn inner_build() -> Result<process::ExitStatus, io::Error> {
-        let mut cmd =
-            Command::new("make")
+        let mut cmd = Command::new("make")
             .args(&["-j", &*format!("{}", sys_info::cpu_num().unwrap_or(2))])
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
             .spawn()
-            .unwrap_or_else(|e| { panic!("failed to execute child: {}", e) });
+            .unwrap_or_else(|e| panic!("failed to execute child: {}", e));
         let status = cmd.wait();
         status
     }
 
     fn inner_install() -> Result<process::ExitStatus, io::Error> {
-        let mut cmd =
-            Command::new("make")
+        let mut cmd = Command::new("make")
             .args(&["install"])
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
             .spawn()
-            .unwrap_or_else(|e| { panic!("failed to execute child: {}", e) });
+            .unwrap_or_else(|e| panic!("failed to execute child: {}", e));
         let status = cmd.wait();
         status
     }
@@ -157,15 +156,16 @@ pub fn install(m: &ArgMatches) {
 pub fn switch(m: &ArgMatches) {
     let config = Config::from_matches(m);
     println!("Using Groonga version: {}", config.version.clone().unwrap());
-    let groonga_dir = format!("groonga-{}",
-                              config.version.unwrap());
+    let groonga_dir = format!("groonga-{}", config.version.unwrap());
     match config.version {
         Some("system") => {
             profile::unix::remove_grnenv_profile(&config.shim_dir).unwrap();
             return ();
         }
         Some(_) => {
-            profile::unix::create_profile_source(&config.shim_dir, &groonga_dir, &config.versions_dir)
+            profile::unix::create_profile_source(&config.shim_dir,
+                                                 &groonga_dir,
+                                                 &config.versions_dir)
                 .expect("Could not create source-groonga.sh")
         }
         None => unreachable!(),
@@ -174,8 +174,7 @@ pub fn switch(m: &ArgMatches) {
 
 pub fn uninstall(m: &ArgMatches) {
     let config = Config::from_matches(m);
-    let groonga_dir = format!("groonga-{}",
-                              config.version.unwrap());
+    let groonga_dir = format!("groonga-{}", config.version.unwrap());
     if config.versions_dir.join(groonga_dir.clone()).exists() {
         println!("Removing {}....", groonga_dir.clone());
         fs::remove_dir_all(&config.versions_dir.join(groonga_dir))

@@ -32,7 +32,8 @@ pub fn create_profile_source(shim_dir: &PathBuf,
         println!("Specified version is not installed.");
         process::exit(1);
     }
-    let contents = format!("export PATH={}:$PATH\nexport {}={}:${}\nexport PKG_CONFIG_PATH={}:$PKG_CONFIG_PATH",
+    let contents = format!("export PATH={}:$PATH\nexport {}={}:${}\nexport \
+                            PKG_CONFIG_PATH={}:$PKG_CONFIG_PATH",
                            installed_groonga.display(),
                            dynamic_link_var_pathname(),
                            libgroonga.display(),
