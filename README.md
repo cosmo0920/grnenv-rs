@@ -24,6 +24,12 @@ https://github.com/sfackler/rust-openssl#windows
 
 ### *nix
 
+* C and C++ compilers like gcc or clang
+* autoconf
+* automake
+* libtool
+* pkg-config
+* pcre
 * openssl development package (libssl-dev or openssl-devel like package)
 * rust compiler (installed with rustup)
 
