@@ -2,6 +2,7 @@ extern crate tempdir;
 extern crate hyper;
 extern crate zip;
 extern crate clap;
+extern crate kuchiki;
 #[cfg(not(windows))]
 extern crate libc;
 #[cfg(not(windows))]

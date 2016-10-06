@@ -5,6 +5,8 @@ use std::process;
 use clap::ArgMatches;
 use tempdir::TempDir;
 use hyper::Client;
+use kuchiki;
+
 use extractor;
 use downloader;
 use profile;
@@ -98,5 +100,28 @@ pub fn uninstall(m: &ArgMatches) {
     } else {
         println!("{} is not installed!", groonga_dir.clone());
         process::exit(1);
+    }
+}
+
+pub fn list() {
+    use kuchiki::traits::*;
+
+    if let Ok(doc) = kuchiki::parse_html()
+        .from_http("http://packages.groonga.org/windows/groonga") {
+        let docs = doc.select("tr").unwrap().collect::<Vec<_>>();
+        println!("Installable Groonga:");
+        for handle in &docs {
+            let texts = handle.as_node().descendants().text_nodes().collect::<Vec<_>>();
+            if let Some(text) = texts.first().clone() {
+                let package = text.as_node().text_contents();
+                if package.contains("groonga") && package.contains("zip") &&
+                   (package.contains("x86") || package.contains("x64")) {
+                    let display = package.split(".zip").collect::<Vec<_>>();
+                    println!("\t{}", display.first().unwrap_or(&""));
+                }
+            }
+        }
+    } else {
+        println!("{}", "The page couldn't be fetched");
     }
 }
