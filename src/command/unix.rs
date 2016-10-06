@@ -195,7 +195,7 @@ pub fn list() {
         println!("Installable Groonga:");
         for handle in &docs {
             let texts = handle.as_node().descendants().text_nodes().collect::<Vec<_>>();
-            if let Some(text) = texts.first().clone() {
+            if let Some(text) = texts.first() {
                 let package = text.as_node().text_contents();
                 if package.contains("groonga") && package.contains("zip") {
                     let display = package.split(".zip").collect::<Vec<_>>();
