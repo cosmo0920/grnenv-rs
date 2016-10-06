@@ -52,7 +52,8 @@ pub fn install(m: &ArgMatches) {
     let client = Client::new();
     let filename = downloader::file_download(&client,
                                              &*format!("{}/{}", BASE_URL, groonga_source),
-                                             download_dir.clone(), "groonga.zip")
+                                             download_dir.clone(),
+                                             "groonga.zip")
         .expect("Failed to download");
     extractor::extract_zip(&filename, &download_dir);
     assert!(env::set_current_dir(&download_dir.join(groonga_dir.clone())).is_ok());
@@ -121,8 +122,7 @@ pub fn install(m: &ArgMatches) {
         let mut cmd = Command::new("./configure")
             .args(&[&*format!("--prefix={}",
                               config.versions_dir.join(groonga_dir.clone()).display()),
-                    &*format!("PKG_CONFIG_PATH={}",
-                              openssl_pkg_config_path())])
+                    &*format!("PKG_CONFIG_PATH={}", openssl_pkg_config_path())])
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
             .spawn()
@@ -190,8 +190,7 @@ pub fn uninstall(m: &ArgMatches) {
 pub fn list() {
     use kuchiki::traits::*;
 
-    if let Ok(doc) = kuchiki::parse_html()
-        .from_http("http://packages.groonga.org/source/groonga") {
+    if let Ok(doc) = kuchiki::parse_html().from_http("http://packages.groonga.org/source/groonga") {
         let docs = doc.select("tr").unwrap().collect::<Vec<_>>();
         println!("Installable Groonga:");
         for handle in &docs {
