@@ -51,7 +51,7 @@ pub fn install(m: &ArgMatches) {
     let client = Client::new();
     let filename = downloader::file_download(&client,
                                              &*format!("{}/{}", BASE_URL, groonga_source),
-                                             download_dir.clone())
+                                             download_dir.clone(), "groonga.zip")
         .expect("Failed to download");
     extractor::extract_zip(&filename, &download_dir);
     assert!(env::set_current_dir(&download_dir.join(groonga_dir.clone())).is_ok());
