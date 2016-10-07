@@ -191,13 +191,13 @@ pub fn list() {
     use kuchiki::traits::*;
 
     if let Ok(doc) = kuchiki::parse_html().from_http("http://packages.groonga.org/source/groonga") {
-        let docs = doc.select("tr").unwrap().collect::<Vec<_>>();
+        let docs = doc.select("tr").unwrap_or_else(|e| panic!("failed to find tr elements: {:?}", e)).collect::<Vec<_>>();
         println!("Installable Groonga:");
         for handle in &docs {
             let texts = handle.as_node().descendants().text_nodes().collect::<Vec<_>>();
             if let Some(text) = texts.first() {
                 let package = text.as_node().text_contents();
-                if package.contains("groonga") && package.contains("zip") {
+                if package.contains("groonga") && package.contains("zip") && !package.contains("asc") {
                     let display = package.split(".zip").collect::<Vec<_>>();
                     println!("\t{}", display.first().unwrap_or(&""));
                 }
