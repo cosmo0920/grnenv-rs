@@ -1,6 +1,8 @@
 grnenv-rs
 ===
 
+[![Build Status](https://travis-ci.org/cosmo0920/grnenv-rs.svg?branch=master)](https://travis-ci.org/cosmo0920/grnenv-rs)
+
 grnenv-rs is a tool to switch using multiple Groonga versions.
 
 Currently, only confirmed to work on Windows 10 and macOS Sierra.
