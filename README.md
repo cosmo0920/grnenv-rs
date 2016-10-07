@@ -2,6 +2,7 @@ grnenv-rs
 ===
 
 [![Build Status](https://travis-ci.org/cosmo0920/grnenv-rs.svg?branch=master)](https://travis-ci.org/cosmo0920/grnenv-rs)
+[![Build status](https://ci.appveyor.com/api/projects/status/2m8wmd96h4k7f2om/branch/master?svg=true)](https://ci.appveyor.com/project/cosmo0920/grnenv-rs/branch/master)
 
 grnenv-rs is a tool to switch using multiple Groonga versions.
 
