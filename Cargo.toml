@@ -13,6 +13,7 @@ hyper = "~0.9.10"
 zip = "~0.1"
 clap = "~2.13"
 libc = "~0.2.15"
+env_proxy = "~0.1"
 
 [dependencies.kuchiki]
 version = "~0.3.4"
