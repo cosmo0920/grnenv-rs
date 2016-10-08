@@ -23,7 +23,7 @@ pub fn init() {
     fs::create_dir_all(&config.shim_dir).expect("Could not create shims directory.");
     fs::create_dir_all(&config.versions_dir).expect("Could not create versions directory.");
     if !env::home_dir()
-        .unwrap()
+        .unwrap_or_else(|| panic!("Cound not found homedir."))
         .join(".profile")
         .exists() {
         println!(r#"Write the following thing:
