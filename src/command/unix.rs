@@ -8,7 +8,7 @@ use kuchiki;
 
 use clap::ArgMatches;
 use tempdir::TempDir;
-use hyper::Client;
+use hyper::{Client, Url};
 use config::Config;
 use extractor;
 use downloader;
@@ -34,7 +34,10 @@ pub fn init() {
 }
 
 pub fn install(m: &ArgMatches) {
+    extern crate env_proxy;
+
     const BASE_URL: &'static str = "http://packages.groonga.org/source/groonga";
+    let maybe_proxy = env_proxy::for_url(&Url::parse(BASE_URL).unwrap());
     let config = Config::from_matches(m);
     println!("Obtaining Groonga version: {}",
              config.version.clone().unwrap());
@@ -49,7 +52,10 @@ pub fn install(m: &ArgMatches) {
         .expect("Could not create temp dir.")
         .into_path();
 
-    let client = Client::new();
+    let client = match maybe_proxy {
+        None => Client::new(),
+        Some(host_port) => Client::with_http_proxy(host_port.0, host_port.1)
+    };
     let filename = downloader::file_download(&client,
                                              &*format!("{}/{}", BASE_URL, groonga_source),
                                              download_dir.clone(),

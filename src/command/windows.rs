@@ -4,7 +4,7 @@ use std::process;
 
 use clap::ArgMatches;
 use tempdir::TempDir;
-use hyper::Client;
+use hyper::{Client, Url};
 use kuchiki;
 
 use extractor;
@@ -38,7 +38,10 @@ And write the following thing:
 }
 
 pub fn install(m: &ArgMatches) {
+    extern crate env_proxy;
+
     const BASE_URL: &'static str = "http://packages.groonga.org/windows/groonga";
+    let maybe_proxy = env_proxy::for_url(&Url::parse(BASE_URL).unwrap());
     let config = Config::from_matches(m);
     println!("Value for architecture: {}",
              config.arch.clone().expect("unsupported platform"));
@@ -57,7 +60,10 @@ pub fn install(m: &ArgMatches) {
         .expect("Could not create temp dir.")
         .into_path();
 
-    let client = Client::new();
+    let client = match maybe_proxy {
+        None => Client::new(),
+        Some(host_port) => Client::with_http_proxy(host_port.0, host_port.1)
+    };
     let filename = downloader::file_download(&client,
                                              &*format!("{}/{}", BASE_URL, groonga_binary),
                                              download_dir,
