@@ -41,7 +41,7 @@ https://github.com/sfackler/rust-openssl#windows
 If you installed openssl library in non-standard place, please specify `OPENSSL_PKG_CONFIG_PATH` environment variable like this:
 
 ```bash
-$ export OPENSSL_PKG_CONFIG_PATH=/path/to/installed/openssl
+$ export OPENSSL_PKG_CONFIG_PATH=/path/to/installed/openssl/lib/pkgconfig
 ```
 
 ## Usage
