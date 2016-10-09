@@ -207,8 +207,9 @@ pub fn list() {
                 let package = text.as_node().text_contents();
                 if package.contains("groonga") && package.contains("zip") &&
                    !package.contains("asc") {
-                    let display = package.split(".zip").collect::<Vec<_>>();
-                    println!("\t{}", display.first().unwrap_or(&""));
+                       let package = package.split(".zip").collect::<Vec<_>>();
+                       let pkg = package.first().unwrap_or(&"").to_owned().split("-").collect::<Vec<_>>();
+                       println!("\t{}", pkg.get(1).unwrap_or(&""));
                 }
             }
         }
