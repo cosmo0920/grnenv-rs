@@ -27,7 +27,6 @@ pub fn versions() {
     }
 }
 
-
 pub struct MaybeProxyUrl {
     pub url: Url,
 }
