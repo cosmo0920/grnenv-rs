@@ -192,7 +192,6 @@ pub fn uninstall(m: &ArgMatches) {
     }
 }
 
-
 pub fn list() {
     use kuchiki::traits::*;
 
