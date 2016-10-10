@@ -115,9 +115,7 @@ pub fn list() {
     use command::common::MaybeProxyUrl;
 
     let base_url: &'static str = "http://packages.groonga.org/windows/groonga";
-    let maybe_proxy_url = MaybeProxyUrl {
-        url: Url::parse(base_url).unwrap()
-    };
+    let maybe_proxy_url = MaybeProxyUrl { url: Url::parse(base_url).unwrap() };
     if let Ok(doc) = kuchiki::parse_html().from_http(maybe_proxy_url) {
         let docs = doc.select("tr").unwrap().collect::<Vec<_>>();
         println!("Installable Groonga:");

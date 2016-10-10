@@ -29,7 +29,7 @@ pub fn versions() {
 
 
 pub struct MaybeProxyUrl {
-    pub url: Url
+    pub url: Url,
 }
 
 impl<'a> IntoResponse for MaybeProxyUrl {
