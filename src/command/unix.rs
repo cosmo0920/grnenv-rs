@@ -54,7 +54,7 @@ pub fn install(m: &ArgMatches) {
 
     let client = match maybe_proxy {
         None => Client::new(),
-        Some(host_port) => Client::with_http_proxy(host_port.0, host_port.1)
+        Some(host_port) => Client::with_http_proxy(host_port.0, host_port.1),
     };
     let filename = downloader::file_download(&client,
                                              &*format!("{}/{}", BASE_URL, groonga_source),
@@ -206,9 +206,10 @@ pub fn list() {
                 let package = text.as_node().text_contents();
                 if package.contains("groonga") && package.contains("zip") &&
                    !package.contains("asc") {
-                       let package = package.split(".zip").collect::<Vec<_>>();
-                       let pkg = package.first().unwrap_or(&"").to_owned().split("-").collect::<Vec<_>>();
-                       println!("\t{}", pkg.get(1).unwrap_or(&""));
+                    let package = package.split(".zip").collect::<Vec<_>>();
+                    let pkg =
+                        package.first().unwrap_or(&"").to_owned().split("-").collect::<Vec<_>>();
+                    println!("\t{}", pkg.get(1).unwrap_or(&""));
                 }
             }
         }
