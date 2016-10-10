@@ -194,8 +194,11 @@ pub fn uninstall(m: &ArgMatches) {
 
 pub fn list() {
     use kuchiki::traits::*;
+    use command::common::MaybeProxyUrl;
 
-    if let Ok(doc) = kuchiki::parse_html().from_http("http://packages.groonga.org/source/groonga") {
+    let base_url: &'static str = "http://packages.groonga.org/source/groonga";
+    let maybe_proxy_url = MaybeProxyUrl { url: Url::parse(base_url).unwrap() };
+    if let Ok(doc) = kuchiki::parse_html().from_http(maybe_proxy_url) {
         let docs = doc.select("tr")
             .unwrap_or_else(|e| panic!("failed to find tr elements: {:?}", e))
             .collect::<Vec<_>>();
