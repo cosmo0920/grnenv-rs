@@ -1,5 +1,10 @@
 use std::fs;
 use std::path::Path;
+
+use kuchiki::traits::*;
+use hyper::{Client, Url};
+use hyper::client::Response;
+use hyper::Result as HyperResult;
 use util;
 
 pub fn versions() {
@@ -19,5 +24,23 @@ pub fn versions() {
     println!("\tsystem");
     for entry in names {
         println!("\t{}", entry);
+    }
+}
+
+
+pub struct MaybeProxyUrl {
+    pub url: Url
+}
+
+impl<'a> IntoResponse for MaybeProxyUrl {
+    fn into_response(self) -> HyperResult<Response> {
+        extern crate env_proxy;
+        let maybe_proxy = env_proxy::for_url(&self.url);
+
+        let client = match maybe_proxy {
+            None => Client::new(),
+            Some(host_port) => Client::with_http_proxy(host_port.0, host_port.1),
+        };
+        client.get(self.url).send()
     }
 }
