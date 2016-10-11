@@ -36,6 +36,16 @@ https://github.com/sfackler/rust-openssl#windows
 * openssl development package (libssl-dev or openssl-devel like package)
 * rust compiler (installed with rustup)
 
+#### For macOS
+
+You can use homebrewed openssl for compiling openssl-sys crate like this:
+
+```bash
+export OPENSSL_INCLUDE_DIR=/usr/local/opt/openssl/include
+export DEP_OPENSSL_INCLUDE=/usr/local/opt/openssl/include
+```
+And then, `cargo build`.
+
 #### Note
 
 If you installed openssl library in non-standard place, please specify `OPENSSL_PKG_CONFIG_PATH` environment variable like this:
