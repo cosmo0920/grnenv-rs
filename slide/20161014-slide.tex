@@ -1,0 +1,317 @@
+\documentclass[12pt, unicode]{beamer}
+\usetheme{Warsaw}
+\usepackage{luatexja}
+\usepackage{listings}
+\usepackage{listings}
+\lstset{
+  basicstyle=\ttfamily\bfseries,
+  commentstyle=\color{red}\itshape,
+  stringstyle=\color{black!30!green},
+  showstringspaces=false,
+  keywordstyle=\color{blue}\bfseries
+}
+%color
+\definecolor{battleshipgrey}{rgb}{0.52, 0.52, 0.51}
+
+\title{How to apply Rust in Real World?}
+\author{Hiroshi Hatake}
+\date[2016/03/12]{Technical information sharing seminar}
+
+\begin{document}
+
+\frame{\maketitle}
+
+\begin{frame}{Introduction}
+\begin{block}{What is Rust?}
+\textbf{Rust} is a systems programming language that runs blazingly fast, prevents segfaults, and guarantees thread safety.
+\end{block}
+\onslide<1->
+\begin{itemize}
+\item<2-> zero-cost abstractions
+\item<3-> guaranteed memory safety
+\item<4-> threads without data races
+\item<5-> trait-based generics
+\item<6-> pattern matching
+\item<7-> type inference
+\end{itemize}
+\end{frame}
+
+\begin{frame}{How to apply Rust in real world -- Motivation}
+  \onslide<1->
+  \begin{block}{Motivation}
+  \begin{itemize}
+  \item<1-> Rust runs fast and guarantee safety.
+  \item<2-> And, Rust runs on Windows same as *nix systems.
+  \end{itemize}
+  \end{block}
+\end{frame}
+
+\begin{frame}{An example -- grnenv-rs}
+\begin{block}{grnenv -- switch Groonga versions}
+grnenv is one of the switching Groonga version tool.
+\end{block}
+\onslide<1->
+\begin{itemize}
+\item<2-> It requires bash.
+\item<3-> It assumes that Linux environment.
+\item<4-> But, I want to use switching tool like this on Windows.
+\item<5-> If possible, I want to create \textbf {executables}. Because Windows can handle PE(portable executables) for Windows 2k or older.\footnote[frame]{Perhaps, it can handle executables for Windows 95.}
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Rust is suitable for this purpose?}
+\begin{block}{Rust is suitable for this purpose?}
+Halfly yes, halfly not. Because....
+\end{block}
+\onslide<1->
+\begin{itemize}
+\item<2-> It requires Visual C++ 2015 Runtime. No more needed.
+\item<3-> It can create executables.
+\item<4-> But, it is hard to handle \textbf {lifetime}.
+\item<5-> Also, It is hard to handle and extend Trait in some cases.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{Rust has difference type system than ever.}
+\begin{block}{Rust can represent abnormal value in type.}
+Rust has \textbf {Option} and \textbf{Result} types.
+\end{block}
+\onslide<1->
+\begin{itemize}
+\item<2-> \textbf {Option} can contain normal value within ``\textbf{Some}'' and \textbf{None} which represents ``abnormal value'' like as ``NULL''.
+\item<3-> \textbf {Result} can contain normal value in ``\textbf{Ok}'' and ``\textbf{Err}'' which can contain error information.
+\end{itemize}
+\end{frame}
+
+\begin{frame}{What is benefits for these types?}
+  \begin{block}{}
+    I will show a few questions.
+  \end{block}
+\end{frame}
+
+\newcommand\Small{\fontsize{9}{9.2}\selectfont}
+%% Define highlighting for Rust.
+\lstdefinelanguage{Rust} {
+  morecomment = [l]{//},
+  morecomment = [l]{///},
+  morecomment = [s]{/*}{*/},
+  morestring=[b]",
+  sensitive = true,
+  morekeywords = {extern, return, crate, fn, let, use, mut, impl, for, struct, pub, if, type, pub, match}
+}
+\begin{frame}[fragile]{What is benefits for these types?}
+  \begin{block}{}
+    Will this function return abnormal value?
+  \end{block}
+  \begin{lstlisting}[language={Rust},basicstyle=\ttfamily\Small]
+    pub fn read_dir<P: AsRef<Path>>(path: P) -> ?
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{What is benefits for these types?}
+  \begin{block}{}
+    First. Will this function return abnormal value?
+    \newline
+    Yes. It returns \textbf{Result}.
+  \end{block}
+  \begin{lstlisting}[language={Rust},basicstyle=\ttfamily\Small]
+    type Result<T> = Result<T, Error>;
+    pub fn read_dir<P: AsRef<Path>>(path: P)
+      -> std::io::Result<ReadDir>
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{What is benefits for these types?}
+  \begin{block}{}
+    Second. Will this function return abnormal value?
+  \end{block}
+  \begin{lstlisting}[language={Rust},basicstyle=\ttfamily\Small]
+    // write all buffer into writing target.
+    fn write_all(&mut self, buf: &[u8]) -> ?
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{What is benefits for these types?}
+  \begin{block}{}
+    Second. Will this function return abnormal value?
+    \newline
+    Yes. It returns \textbf{Result}.
+  \end{block}
+  \begin{lstlisting}[language={Rust},basicstyle=\ttfamily\Small]
+    fn write_all(&mut self, buf: &[u8]) -> Result<()>
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{What is benefits for these types?}
+  \begin{block}{}
+    Third. Will this function return abnormal value?
+  \end{block}
+  \begin{lstlisting}[language={Rust},basicstyle=\ttfamily\Small]
+    // obtain user's home directory.
+    pub fn home_dir() -> ?
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{What is benefits for these types?}
+  \begin{block}{}
+    Third. Will this function return abnormal value?
+    \newline
+    Ofcource, Yes!!!
+
+    Because \$HOME always does not exist.
+    \newline
+    When without sudo -E or using more tighten sudo settings, \$HOME cannot obtain.
+  \end{block}
+  \begin{lstlisting}[language={Rust},basicstyle=\ttfamily\Small]
+    pub fn home_dir() -> Option<PathBuf>
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{A person says....}
+  \begin{block}{}
+    The three laws of disallow NULL.\footnote[frame]{https://twitter.com/gakuzzzz/status/783616563102388224}
+  \end{block}
+\onslide<1->
+\begin{itemize}
+\item<2-> Don't receive NULL
+\item<3-> Don't return NULL
+\item<4-> Don't write NULL
+\end{itemize}
+\end{frame}
+
+\begin{frame}[fragile]{A person says....}
+  \begin{block}{}
+    The three laws of disallow NULL.\footnote[frame]{https://twitter.com/gakuzzzz/status/783616563102388224}
+    \newline
+    For Rust version.
+    \onslide<2->
+    Rust does not have NULL, Yay!
+    \newline
+    But Rust has a few danger things like as unwrap().
+  \end{block}
+\onslide<2->
+\begin{itemize}
+\item<3-> Don't use unwrap()
+\item<4-> Don't dismiss error values
+\item<5-> Don't use panic! if it cannot recover
+\end{itemize}
+\end{frame}
+
+\newcommand\SSmall{\fontsize{7}{7}\selectfont}
+\begin{frame}[fragile]{For safety}
+  \begin{block}{}
+    Rustish guaranting ways.
+  \end{block}
+\onslide<2->
+\begin{itemize}
+\item<2-> Don't use unwrap()
+\end{itemize}
+  \begin{lstlisting}[language={Rust},basicstyle=\ttfamily\SSmall]
+    let f = fs::remove_file(shim_dir.join("source-groonga.sh"))
+              .unwrap();
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{For safety}
+  \begin{block}{}
+    Rustish guaranting ways.
+  \end{block}
+\onslide<1->
+\begin{itemize}
+\item<1-> Don't use unwrap(). Use \textbf{try!}.
+\end{itemize}
+  \begin{lstlisting}[language={Rust},basicstyle=\ttfamily\SSmall]
+    let f = try!(fs::remove_file(shim_dir.join("source-groonga.sh")));
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{For safety}
+  \begin{block}{}
+    Rustish guaranting ways.
+  \end{block}
+\onslide<1->
+\begin{itemize}
+\item<1-> Don't dismiss error values
+\end{itemize}
+  \begin{lstlisting}[language={Rust},basicstyle=\ttfamily\SSmall]
+    let _ = f.write_all(&contents.as_bytes());
+    f.sync_data()
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{For safety}
+  \begin{block}{}
+    Rustish guaranting ways.
+  \end{block}
+\onslide<1->
+\begin{itemize}
+\item<1-> Don't dismiss error values. Use \textbf{pattern matching} to handle error.
+\end{itemize}
+\begin{lstlisting}[language={Rust},basicstyle=\ttfamily\SSmall]
+  match f.write_all(&contents.as_bytes()) {
+    Ok(_) => return Ok(()),
+    Err(e) => println!("{}", e),
+  }
+  f.sync_data()
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{For safety}
+  \begin{block}{}
+    Rustish guaranting ways.
+  \end{block}
+\onslide<1->
+\begin{itemize}
+\item<1-> Don't use panic! if it cannot recover.
+\end{itemize}
+  \begin{lstlisting}[language={Rust},basicstyle=\ttfamily\SSmall]
+    let home = env::home_dir().unwrap();
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{For safety}
+  \begin{block}{}
+    Rustish guaranting ways.
+  \end{block}
+\onslide<1->
+\begin{itemize}
+\item<1-> Don't use panic! if it cannot recover.
+\end{itemize}
+  \begin{lstlisting}[language={Rust},basicstyle=\ttfamily\SSmall]
+    let home = env::home_dir()
+                .unwrap_or_else(|| panic!("Cound not found homedir."));
+  \end{lstlisting}
+\end{frame}
+
+\begin{frame}[fragile]{Someone would think as....}
+  \begin{block}{}
+    OK. I studied Rustish guaranting ways.
+    \newline
+    Always using Option and Result for abnormal values makes everything OK.
+  \end{block}
+\end{frame}
+
+\begin{frame}[fragile]{Someone would think as....}
+  \begin{block}{}
+    Answer: Sadly, No.
+    \newline
+    Current Rust does not handle Abstract data type in main() function.
+    It can handle only i32(=normally, int) type values, like ..., -2, -1, 0, 1, 2, ....\footnote[frame]{This is intended behaviour. see also: https://github.com/rust-lang/rust/issues/12130\#issuecomment-34583413}
+  \end{block}
+\end{frame}
+
+\begin{frame}{Conclusion}
+  \begin{itemize}
+  \item Rust works on Windows same as *nix.
+  \item Rust does not have NULL in concept.
+  \item Rust has some of danger method like as unwrap().
+  \item Using Option and Result is better in most cases.
+  \item Some of places is not usable Result type.
+  \end{itemize}
+\end{frame}
+
+\frame{\centering \Large Happy without NULL life with Rust! Enjoy!!}
+
+\frame{\centering \Large Any questions?}
+
+\end{document}

@@ -1,2 +1,11 @@
 target
 *.rs.bk
+*.db*
+*.aux
+*.toc
+*.log
+*.snm
+*.vrb
+*.nav
+*.synctex.gz
+*.out
