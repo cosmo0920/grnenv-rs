@@ -22,7 +22,7 @@ pub fn create_profile_source(shim_dir: &PathBuf,
     let contents = format!("$Env:Path = \"{};\" + $Env:Path",
                            installed_groonga.display());
     match f.write_all(&contents.as_bytes()) {
-        Ok(_) => return Ok(()),
+        Ok(_) => (),
         Err(e) => println!("{}", e),
     }
     f.sync_data()

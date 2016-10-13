@@ -249,7 +249,7 @@ Rust has \textbf {Option} and \textbf{Result} types.
 \end{itemize}
 \begin{lstlisting}[language={Rust},basicstyle=\ttfamily\SSmall]
   match f.write_all(&contents.as_bytes()) {
-    Ok(_) => return Ok(()),
+    Ok(_) => (),
     Err(e) => println!("{}", e),
   }
   f.sync_data()

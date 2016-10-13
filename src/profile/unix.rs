@@ -40,7 +40,7 @@ pub fn create_profile_source(shim_dir: &PathBuf,
                            dynamic_link_var_pathname(),
                            pkg_config.display());
     match f.write_all(&contents.as_bytes()) {
-        Ok(_) => return Ok(()),
+        Ok(_) => (),
         Err(e) => println!("{}", e),
     }
     f.sync_data()
