@@ -75,6 +75,7 @@ fn default_main() {
         ("versions", _) => command::common::versions(),
         ("uninstall", Some(m)) => command::windows::uninstall(m),
         ("list", _) => command::windows::list(),
+        (external, Some(ext_m)) => command::common::execute_external_command(external, ext_m),
         (_, _) => unreachable!(),
     }
 }
