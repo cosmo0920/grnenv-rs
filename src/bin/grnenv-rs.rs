@@ -4,7 +4,7 @@ extern crate grnenvlib;
 #[macro_use]
 extern crate clap;
 
-use clap::{Arg, App, SubCommand};
+use clap::{Arg, App, AppSettings, SubCommand};
 use grnenvlib::command;
 
 fn main() {
@@ -16,6 +16,7 @@ fn cli() -> App<'static, 'static> {
         .version(crate_version!())
         .author(crate_authors!())
         .about("A tiny tool for obtain and select multiple Groonga.")
+        .setting(AppSettings::AllowExternalSubcommands)
         .subcommand(SubCommand::with_name("init").about("Prepare grnenv-rs."))
         .subcommand(SubCommand::with_name("install")
             .about("Install a given Groonga version and arch")
@@ -59,6 +60,7 @@ fn default_main() {
         ("versions", _) => command::common::versions(),
         ("uninstall", Some(m)) => command::unix::uninstall(m),
         ("list", _) => command::unix::list(),
+        (external, Some(ext_m)) => command::common::execute_external_command(external, ext_m),
         (_, _) => unreachable!(),
     }
 }
@@ -73,6 +75,7 @@ fn default_main() {
         ("versions", _) => command::common::versions(),
         ("uninstall", Some(m)) => command::windows::uninstall(m),
         ("list", _) => command::windows::list(),
+        (external, Some(ext_m)) => command::common::execute_external_command(external, ext_m),
         (_, _) => unreachable!(),
     }
 }
