@@ -60,15 +60,7 @@ fn default_main() {
         ("versions", _) => command::common::versions(),
         ("uninstall", Some(m)) => command::unix::uninstall(m),
         ("list", _) => command::unix::list(),
-        (external, Some(ext_m)) => {
-            use std::process;
-            let ext_args: Vec<&str> = match ext_m.values_of("") {
-                Some(c) => c.collect(),
-                None => process::exit(1),
-            };
-            assert_eq!(external, "subcmd");
-            assert_eq!(ext_args, ["--option", "value", "-fff", "--flag"]);
-        },
+        (external, Some(ext_m)) => command::common::execute_external_command(external, ext_m),
         (_, _) => unreachable!(),
     }
 }
