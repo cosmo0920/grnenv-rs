@@ -10,6 +10,10 @@ fn main () {
     fn inner() -> &'static str {
         "start"
     }
+    #[cfg(target_os = "unix")]
+    fn inner() -> &'static str {
+        "xdg-open"
+    }
 
     let command = inner();
     let arg = "http://groonga.org/docs/";
