@@ -10,6 +10,10 @@ fn main() {
     fn inner() -> &'static str {
         "start"
     }
+    #[cfg(target_os = "linux")]
+    fn inner() -> &'static str {
+        "xdg-open"
+    }
     #[cfg(target_os = "unix")]
     fn inner() -> &'static str {
         "xdg-open"
