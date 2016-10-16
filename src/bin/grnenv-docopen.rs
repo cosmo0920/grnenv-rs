@@ -6,6 +6,10 @@ fn main () {
     fn inner() -> &'static str {
         "open"
     }
+    #[cfg(target_os = "windows")]
+    fn inner() -> &'static str {
+        "start"
+    }
 
     let command = inner();
     let arg = "http://groonga.org/docs/";
