@@ -1,7 +1,7 @@
 use std::process;
 use std::process::Command;
 
-fn main () {
+fn main() {
     #[cfg(target_os = "macos")]
     fn inner() -> &'static str {
         "open"
@@ -24,7 +24,7 @@ fn main () {
         .spawn() {
         Ok(_) => return (),
         Err(e) => e,
-        };
+    };
     println!("Failed to execute docopen subcommand. reason: {:?}", err);
     process::exit(1);
 
