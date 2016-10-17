@@ -1,5 +1,5 @@
 use std::process;
-use std::process::Command;
+use std::process::{Command, Stdio};
 
 fn main() {
     #[cfg(target_os = "macos")]
@@ -23,8 +23,8 @@ fn main() {
     let arg = "http://groonga.org/docs/";
     let err = match Command::new(command)
         .args(&[arg])
-        // .stdout(Stdio::inherit())
-        // .stderr(Stdio::inherit())
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
         .spawn() {
         Ok(_) => return (),
         Err(e) => e,
