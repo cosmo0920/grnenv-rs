@@ -54,6 +54,17 @@ If you installed openssl library in non-standard place, please specify `OPENSSL_
 $ export OPENSSL_PKG_CONFIG_PATH=/path/to/installed/openssl/lib/pkgconfig
 ```
 
+## Plugin system
+
+This tool has plugin system, which is using subcommand mechanism.
+
+You should put `grnenv-*` executables into `$PATH` or `~/bin`.
+
+### Notes
+
+In Windows, `grnenv-*` subcommand should be portable executables.
+If you want to support Windows in subcommand, it recommends to use Rust language and build (i686|x86_64)-pc-windows-msvc target.
+
 ## Usage
 
 ### For Windows
