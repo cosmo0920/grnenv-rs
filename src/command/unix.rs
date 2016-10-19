@@ -13,6 +13,7 @@ use config::Config;
 use extractor;
 use downloader;
 use profile;
+use build_conf;
 
 pub fn init() {
     let config = Config::new();
@@ -22,6 +23,7 @@ pub fn init() {
     fs::create_dir_all(&config.install_dir).expect("Could not create installation directory.");
     fs::create_dir_all(&config.shim_dir).expect("Could not create shims directory.");
     fs::create_dir_all(&config.versions_dir).expect("Could not create versions directory.");
+    build_conf::write_conf(&config);
     if !env::home_dir()
         .unwrap_or_else(|| panic!("Cound not found homedir."))
         .join(".profile")
@@ -123,12 +125,16 @@ pub fn install(m: &ArgMatches) {
     fn inner_configure(config: &Config,
                        groonga_dir: String)
                        -> Result<process::ExitStatus, io::Error> {
-        println!("{}",
-                 config.versions_dir.join(groonga_dir.clone()).display());
+        let build_args = try!(build_conf::read_build_args(config));
+        println!("{} with args: {}",
+                 config.versions_dir.join(groonga_dir.clone()).display(),
+                 build_args.clone());
         let mut cmd = Command::new("./configure")
             .args(&[&*format!("--prefix={}",
                               config.versions_dir.join(groonga_dir.clone()).display()),
-                    &*format!("PKG_CONFIG_PATH={}", openssl_pkg_config_path())])
+                    &*format!("PKG_CONFIG_PATH={}", openssl_pkg_config_path()),
+                    &*build_args],
+            )
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
             .spawn()

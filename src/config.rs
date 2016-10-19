@@ -10,6 +10,7 @@ pub struct Config<'a> {
     pub versions_dir: PathBuf,
     pub arch: Option<Cow<'a, str>>,
     pub version: Option<&'a str>,
+    pub build_conf: PathBuf,
 }
 
 impl<'a> Default for Config<'a> {
@@ -20,6 +21,7 @@ impl<'a> Default for Config<'a> {
             versions_dir: PathBuf::from(""),
             arch: None,
             version: None,
+            build_conf: PathBuf::from(""),
         }
     }
 }
@@ -29,10 +31,12 @@ impl<'a> Config<'a> {
         let install_dir = util::obtain_install_base_path();
         let shim_dir = install_dir.join("shims").join("bin");
         let groonga_versioned_dir = util::obtain_groonga_versioned_path();
+        let build_conf = install_dir.join("build.toml");
         Config {
             install_dir: install_dir,
             shim_dir: shim_dir,
             versions_dir: groonga_versioned_dir,
+            build_conf: build_conf,
             ..Config::default()
         }
     }
@@ -48,12 +52,14 @@ impl<'a> Config<'a> {
             "x86" | "i686" => Some(Cow::Borrowed("x86")),
             _ => None,
         };
+        let build_conf = install_dir.join("build.toml");
         Config {
             install_dir: install_dir,
             shim_dir: shim_dir,
             versions_dir: groonga_versioned_dir,
             arch: arch,
             version: version,
+            build_conf: build_conf,
         }
     }
 }
