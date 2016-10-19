@@ -29,7 +29,7 @@ pub fn write_conf(config: &Config) {
             Err(e) => {
                 println!("{}", e);
                 process::exit(2)
-            },
+            }
         }
     }
 }

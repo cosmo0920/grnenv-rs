@@ -126,7 +126,8 @@ pub fn install(m: &ArgMatches) {
                        groonga_dir: String)
                        -> Result<process::ExitStatus, io::Error> {
         let conf_args = try!(build_conf::read_build_args(config));
-        let build_args: Vec<String> = conf_args.split_whitespace().into_iter().map(|e| e.to_owned()).collect();
+        let build_args: Vec<String> =
+            conf_args.split_whitespace().into_iter().map(|e| e.to_owned()).collect();
         println!("{} with args: {:?}",
                  config.versions_dir.join(groonga_dir.clone()).display(),
                  build_args.clone());
