@@ -125,16 +125,17 @@ pub fn install(m: &ArgMatches) {
     fn inner_configure(config: &Config,
                        groonga_dir: String)
                        -> Result<process::ExitStatus, io::Error> {
-        let build_args = try!(build_conf::read_build_args(config));
-        println!("{} with args: {}",
+        let conf_args = try!(build_conf::read_build_args(config));
+        let build_args: Vec<String> = conf_args.split_whitespace().into_iter().map(|e| e.to_owned()).collect();
+        println!("{} with args: {:?}",
                  config.versions_dir.join(groonga_dir.clone()).display(),
                  build_args.clone());
+        let mut args = vec![format!("--prefix={}",
+                                    config.versions_dir.join(groonga_dir.clone()).display()),
+                            format!("PKG_CONFIG_PATH={}", openssl_pkg_config_path())];
+        args.extend(build_args.iter().cloned());
         let mut cmd = Command::new("./configure")
-            .args(&[&*format!("--prefix={}",
-                              config.versions_dir.join(groonga_dir.clone()).display()),
-                    &*format!("PKG_CONFIG_PATH={}", openssl_pkg_config_path()),
-                    &*build_args],
-            )
+            .args(&*args)
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
             .spawn()
