@@ -6,8 +6,8 @@ use toml;
 use rustc_serialize::Decodable;
 use config::Config;
 
-const DEFAULT_ARGS: &'static str = "\"--with-zlib --with-ssl --enable-mruby\
- --without-libstemmer --disable-zeromq\"";
+const DEFAULT_ARGS: &'static str = "\"--with-zlib --with-ssl --enable-mruby --without-libstemmer \
+                                    --disable-zeromq\"";
 
 #[derive(Debug, RustcDecodable, RustcEncodable)]
 struct Configuration {
