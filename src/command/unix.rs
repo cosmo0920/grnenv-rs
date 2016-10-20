@@ -116,25 +116,10 @@ pub fn install(m: &ArgMatches) {
         Ok(0)
     }
 
-    // mainly used for macOS.
-    fn openssl_pkg_config_path() -> String {
-        let key = "OPENSSL_PKG_CONFIG_PATH";
-        env::var(key).unwrap_or("/usr/local/opt/openssl/lib/pkgconfig".to_string())
-    }
-
     fn inner_configure(config: &Config,
                        groonga_dir: String)
                        -> Result<process::ExitStatus, io::Error> {
-        let conf_args = try!(build_conf::read_build_args(config));
-        let build_args: Vec<String> =
-            conf_args.split_whitespace().into_iter().map(|e| e.to_owned()).collect();
-        println!("{} with args: {:?}",
-                 config.versions_dir.join(groonga_dir.clone()).display(),
-                 build_args.clone());
-        let mut args = vec![format!("--prefix={}",
-                                    config.versions_dir.join(groonga_dir.clone()).display()),
-                            format!("PKG_CONFIG_PATH={}", openssl_pkg_config_path())];
-        args.extend(build_args.iter().cloned());
+        let args = try!(build_conf::build_args(config, groonga_dir));
         let mut cmd = Command::new("./configure")
             .args(&*args)
             .stdout(Stdio::inherit())

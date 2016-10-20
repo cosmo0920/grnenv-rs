@@ -1,3 +1,4 @@
+use std::env;
 use std::fs;
 use std::io::prelude::*;
 use std::io;
@@ -55,4 +56,24 @@ pub fn read_build_args(config: &Config) -> Result<String, io::Error> {
     try!(f.read_to_string(&mut buffer));
     let build_conf = parse_toml(buffer);
     Ok(build_conf.args)
+}
+
+// mainly used for macOS.
+fn openssl_pkg_config_path() -> String {
+    let key = "OPENSSL_PKG_CONFIG_PATH";
+    env::var(key).unwrap_or("/usr/local/opt/openssl/lib/pkgconfig".to_string())
+}
+
+pub fn build_args(config: &Config, groonga_dir: String) -> Result<Vec<String>, io::Error> {
+    let conf_args = try!(read_build_args(config));
+    let build_args: Vec<String> =
+        conf_args.split_whitespace().into_iter().map(|e| e.to_owned()).collect();
+    println!("{} with args: {:?}",
+             config.versions_dir.join(groonga_dir.clone()).display(),
+             build_args.clone());
+    let mut args = vec![format!("--prefix={}",
+                                config.versions_dir.join(groonga_dir.clone()).display()),
+                        format!("PKG_CONFIG_PATH={}", openssl_pkg_config_path())];
+    args.extend(build_args.iter().cloned());
+    Ok(args)
 }
