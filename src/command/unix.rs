@@ -131,7 +131,9 @@ pub fn install(m: &ArgMatches) {
     }
 
     fn inner_build() -> Result<process::ExitStatus, io::Error> {
-        let mut cmd = Command::new("make")
+        let make = try!(build_conf::make()
+            .ok_or(io::Error::new(io::ErrorKind::NotFound, "make kind command is not found")));
+        let mut cmd = Command::new(make)
             .args(&["-j", &*format!("{}", sys_info::cpu_num().unwrap_or(2))])
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
@@ -142,7 +144,9 @@ pub fn install(m: &ArgMatches) {
     }
 
     fn inner_install() -> Result<process::ExitStatus, io::Error> {
-        let mut cmd = Command::new("make")
+        let make = try!(build_conf::make()
+            .ok_or(io::Error::new(io::ErrorKind::NotFound, "make kind command is not found")));
+        let mut cmd = Command::new(make)
             .args(&["install"])
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
