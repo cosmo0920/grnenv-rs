@@ -11,12 +11,12 @@ const DEFAULT_ARGS: &'static str = "\"--with-zlib --with-ssl --enable-mruby --wi
                                     --disable-zeromq\"";
 
 #[derive(Debug, PartialEq, Eq, RustcDecodable, RustcEncodable)]
-struct Configuration {
+pub struct Configuration {
     settings: BuildConfig,
 }
 
 #[derive(Debug, Clone, PartialEq, Eq, RustcDecodable, RustcEncodable)]
-struct BuildConfig {
+pub struct BuildConfig {
     args: String,
 }
 
@@ -35,7 +35,7 @@ pub fn write_conf(config: &Config) {
     }
 }
 
-fn parse_toml(config_content: String) -> BuildConfig {
+pub fn parse_toml(config_content: String) -> BuildConfig {
     println!("config:\n{}", config_content);
     let mut parser = toml::Parser::new(&*config_content);
     let toml = match parser.parse() {
@@ -124,7 +124,6 @@ pub fn cmake() -> Option<&'static str> {
 #[cfg(test)]
 mod test {
     use super::*;
-    use super::BuildConfig;
 
     #[test]
     #[cfg(target_os = "windows")]
@@ -152,7 +151,7 @@ mod test {
         let toml = r#"[settings]
 args = "an example arguments"
 "#;
-        let settings = super::parse_toml(toml.to_string());
+        let settings = parse_toml(toml.to_string());
         let expected = BuildConfig {
             args: "an example arguments".to_string()
         };
