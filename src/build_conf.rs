@@ -10,7 +10,7 @@ use config::Config;
 const DEFAULT_ARGS: &'static str = "\"--with-zlib --with-ssl --enable-mruby --without-libstemmer \
                                     --disable-zeromq\"";
 
-#[derive(Debug, RustcDecodable, RustcEncodable)]
+#[derive(Debug, PartialEq, Eq, RustcDecodable, RustcEncodable)]
 struct Configuration {
     settings: BuildConfig,
 }
@@ -78,6 +78,7 @@ pub fn build_args(config: &Config, groonga_dir: String) -> Result<Vec<String>, i
     Ok(args)
 }
 
+#[cfg(not(target_os = "windows"))]
 pub fn is_program_in_path(program: &str) -> bool {
     if let Ok(path) = env::var("PATH") {
         for p in path.split(":") {
@@ -90,6 +91,18 @@ pub fn is_program_in_path(program: &str) -> bool {
     false
 }
 
+#[cfg(target_os = "windows")]
+pub fn is_program_in_path(program: &str) -> bool {
+    use std::process::{Command, Stdio};
+
+    let mut args = vec!["-Command".to_string(), "Get-Command".to_string()];
+    args.push(program.to_string());
+    Command::new("powershell").args(&*args)
+        .stdout(Stdio::null())
+        .stderr(Stdio::null())
+        .spawn().is_ok()
+}
+
 pub fn make() -> Option<&'static str> {
     if is_program_in_path("gmake") {
         Some("gmake")
@@ -97,5 +110,52 @@ pub fn make() -> Option<&'static str> {
         Some("make")
     } else {
         None
+    }
+}
+
+pub fn cmake() -> Option<&'static str> {
+    if is_program_in_path("cmake") {
+        Some("cmake")
+    } else {
+        None
+    }
+}
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use super::BuildConfig;
+
+    #[test]
+    #[cfg(target_os = "windows")]
+    fn test_cmake() {
+        let cmake = cmake();
+        assert_eq!(Some("cmake"), cmake);
+    }
+
+    #[test]
+    #[cfg(target_os = "linux")]
+    fn test_make() {
+        let cmake = make();
+        assert_eq!(Some("make"), cmake);
+    }
+
+    #[test]
+    #[cfg(target_os = "macos")]
+    fn test_make() {
+        let cmake = make();
+        assert_eq!(Some("make"), cmake);
+    }
+
+    #[test]
+    fn test_parse_toml() {
+        let toml = r#"[settings]
+args = "an example arguments"
+"#;
+        let settings = super::parse_toml(toml.to_string());
+        let expected = BuildConfig {
+            args: "an example arguments".to_string()
+        };
+        assert_eq!(expected, settings);
     }
 }
