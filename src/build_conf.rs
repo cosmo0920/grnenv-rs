@@ -127,9 +127,9 @@ mod test {
 
     #[test]
     #[cfg(target_os = "windows")]
-    fn test_cmake() {
-        let cmake = cmake();
-        assert_eq!(Some("cmake"), cmake);
+    fn test_is_program_in_path() {
+        let cmd = is_program_in_path("cmd");
+        assert_eq!(true, cmd);
     }
 
     #[test]
