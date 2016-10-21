@@ -3,7 +3,7 @@ use std::fs;
 use std::io;
 use std::process;
 use std::process::{Command, Stdio};
-use sys_info;
+use num_cpus;
 use kuchiki;
 
 use clap::ArgMatches;
@@ -134,7 +134,7 @@ pub fn install(m: &ArgMatches) {
         let make = try!(build_conf::make()
             .ok_or(io::Error::new(io::ErrorKind::NotFound, "make kind command is not found")));
         let mut cmd = Command::new(make)
-            .args(&["-j", &*format!("{}", sys_info::cpu_num().unwrap_or(2))])
+            .args(&["-j", &*format!("{}", num_cpus::get())])
             .stdout(Stdio::inherit())
             .stderr(Stdio::inherit())
             .spawn()

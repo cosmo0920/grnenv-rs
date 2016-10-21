@@ -8,8 +8,7 @@ extern crate rustc_serialize;
 extern crate toml;
 #[cfg(not(windows))]
 extern crate libc;
-#[cfg(not(windows))]
-extern crate sys_info;
+extern crate num_cpus;
 #[cfg(windows)]
 extern crate kernel32;
 

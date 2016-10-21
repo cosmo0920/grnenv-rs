@@ -11,11 +11,12 @@ path = "src/lib.rs"
 tempdir = "~0.3"
 hyper = "~0.9.10"
 zip = "~0.1"
-clap = "~2.13"
+clap = "~2.14"
 libc = "~0.2.15"
 env_proxy = "~0.1"
 toml = "~0.1"
 rustc-serialize = "~0.3.18"
+num_cpus = "~1.0"
 
 [dependencies.kuchiki]
 version = "~0.3.4"
@@ -23,6 +24,3 @@ features = ["hyper"]
 
 [target.'cfg(windows)'.dependencies]
 kernel32-sys = "~0.2"
-
-[target.'cfg(not(windows))'.dependencies]
-sys-info = "0.4.1"
