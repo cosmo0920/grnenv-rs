@@ -51,3 +51,38 @@ pub fn obtain_arch() -> Option<String> {
     };
     Some(String::from_utf8_lossy(machine).into_owned())
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::env;
+    use std::path::PathBuf;
+
+    #[test]
+    fn test_obtain_arch() {
+        let arch = obtain_arch();
+        assert!(arch.is_some());
+    }
+
+    #[test]
+    fn test_obtain_groonga_versioned_path() {
+        let home = env::home_dir().unwrap();
+        let _ = env::set_var("HOME", "/home/grnenv");
+        let path = obtain_groonga_versioned_path();
+        let mut versioned = PathBuf::new();
+        versioned.push("/home/grnenv/.groonga/versions");
+        assert_eq!(versioned, path);
+        let _ = env::set_var("HOME", home);
+    }
+
+    #[test]
+    fn test_obtain_install_base_path() {
+        let home = env::home_dir().unwrap();
+        let _ = env::set_var("HOME", "/home/grnenv");
+        let path = obtain_install_base_path();
+        let mut versioned = PathBuf::new();
+        versioned.push("/home/grnenv/.groonga");
+        assert_eq!(versioned, path);
+        let _ = env::set_var("HOME", home);
+    }
+}
