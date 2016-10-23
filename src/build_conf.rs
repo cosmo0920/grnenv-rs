@@ -97,10 +97,12 @@ pub fn is_program_in_path(program: &str) -> bool {
 
     let mut args = vec!["-Command".to_string(), "Get-Command".to_string()];
     args.push(program.to_string());
-    Command::new("powershell").args(&*args)
+    Command::new("powershell")
+        .args(&*args)
         .stdout(Stdio::null())
         .stderr(Stdio::null())
-        .spawn().is_ok()
+        .spawn()
+        .is_ok()
 }
 
 pub fn make() -> Option<&'static str> {
@@ -152,9 +154,7 @@ mod test {
 args = "an example arguments"
 "#;
         let settings = parse_toml(toml.to_string());
-        let expected = BuildConfig {
-            args: "an example arguments".to_string()
-        };
+        let expected = BuildConfig { args: "an example arguments".to_string() };
         assert_eq!(expected, settings);
     }
 }
