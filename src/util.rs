@@ -58,6 +58,19 @@ mod test {
     use std::env;
     use std::path::PathBuf;
 
+    #[cfg(target_os = "linux")]
+    fn stub_home() -> &'static str {
+        "/home/grnenv"
+    }
+    #[cfg(target_os = "macos")]
+    fn stub_home() -> &'static str {
+        "/Users/grnenv"
+    }
+    #[cfg(target_os = "windows")]
+    fn stub_home() -> &'static str {
+        "C:\\Users\\grnenv"
+    }
+
     #[test]
     fn test_obtain_arch() {
         let arch = obtain_arch();
@@ -67,10 +80,10 @@ mod test {
     #[test]
     fn test_obtain_groonga_versioned_path() {
         let home = env::home_dir().unwrap();
-        let _ = env::set_var("HOME", "/home/grnenv");
+        let stub_home = stub_home();
+        let _ = env::set_var("HOME", stub_home.clone());
         let path = obtain_groonga_versioned_path();
-        let mut versioned = PathBuf::new();
-        versioned.push("/home/grnenv/.groonga/versions");
+        let versioned = PathBuf::from(stub_home.clone()).join(".groonga").join("versions");
         assert_eq!(versioned, path);
         let _ = env::set_var("HOME", home);
     }
@@ -78,10 +91,10 @@ mod test {
     #[test]
     fn test_obtain_install_base_path() {
         let home = env::home_dir().unwrap();
-        let _ = env::set_var("HOME", "/home/grnenv");
+        let stub_home = stub_home();
+        let _ = env::set_var("HOME", stub_home.clone());
         let path = obtain_install_base_path();
-        let mut versioned = PathBuf::new();
-        versioned.push("/home/grnenv/.groonga");
+        let versioned = PathBuf::from(stub_home.clone()).join(".groonga");
         assert_eq!(versioned, path);
         let _ = env::set_var("HOME", home);
     }
