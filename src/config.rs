@@ -70,6 +70,10 @@ mod test {
     use std::env;
     use std::path::PathBuf;
 
+    #[cfg(target_os = "unix")]
+    fn stub_home() -> &'static str {
+        "/home/grnenv"
+    }
     #[cfg(target_os = "linux")]
     fn stub_home() -> &'static str {
         "/home/grnenv"
