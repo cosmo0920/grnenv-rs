@@ -69,3 +69,23 @@ fn sanitize_filename(filename: &str) -> PathBuf {
             path
         })
 }
+
+#[cfg(test)]
+mod test {
+    use super::*;
+    use std::env;
+    use tempdir::TempDir;
+
+    #[test]
+    fn test_extractor() {
+        let pwd = env::current_dir().unwrap();
+        let zipfile = pwd.join("fixture").join("test-extractor.zip");
+        let extract_dir = TempDir::new("grnenv-rs").unwrap().into_path();
+        extract_zip(&zipfile, &extract_dir);
+        assert!(extract_dir.is_dir());
+        assert!(extract_dir.join("test-extractor").is_dir());
+        assert!(extract_dir.join("test-extractor").join("test.txt").exists());
+        assert!(extract_dir.join("test-extractor").join("nested").is_dir());
+        assert!(extract_dir.join("test-extractor").join("nested").join("test.txt").exists());
+    }
+}
