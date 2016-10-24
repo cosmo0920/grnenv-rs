@@ -30,15 +30,15 @@ fn main() {
 
     let command = inner();
     let arg = arg();
-    let err = match Command::new(command)
+    match Command::new(command)
         .args(&arg)
         .stdout(Stdio::null())
         .stderr(Stdio::null())
         .spawn() {
         Ok(_) => return (),
-        Err(e) => e,
+        Err(e) => {
+            println!("Failed to execute docopen subcommand. reason: {:?}", e);
+            process::exit(1);
+        }
     };
-    println!("Failed to execute docopen subcommand. reason: {:?}", err);
-    process::exit(1);
-
 }
