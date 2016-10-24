@@ -1,6 +1,8 @@
 extern crate tempdir;
 extern crate hyper;
 extern crate zip;
+extern crate tar;
+extern crate flate2;
 #[macro_use]
 extern crate clap;
 extern crate kuchiki;
