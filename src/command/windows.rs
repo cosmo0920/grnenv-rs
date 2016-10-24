@@ -69,7 +69,7 @@ pub fn install(m: &ArgMatches) {
                                              download_dir,
                                              "groonga.zip")
         .expect("Failed to download");
-    extractor::extract_zip(&filename, &config.versions_dir);
+    assert!(extractor::extract_zip(&filename, &config.versions_dir).is_ok());
 }
 
 pub fn switch(m: &ArgMatches) {

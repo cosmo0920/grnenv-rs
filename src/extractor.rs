@@ -9,11 +9,11 @@ use tar::Archive;
 
 use zip;
 
-pub fn extract_zip(filename: &PathBuf, install_dir: &PathBuf) {
-    let file = File::open(filename).expect("Could not open file.");
-    let mut archive = zip::ZipArchive::new(file).unwrap();
+pub fn extract_zip(filename: &PathBuf, install_dir: &PathBuf) -> Result<(), io::Error> {
+    let file = try!(File::open(filename));
+    let mut archive = try!(zip::ZipArchive::new(file));
     for i in 0..archive.len() {
-        let mut file = archive.by_index(i).unwrap();
+        let mut file = try!(archive.by_index(i));
         let outpath = sanitize_filename(file.name());
         let install_path = Path::new(install_dir.as_path()).join(outpath);
         println!("{}", install_path.display());
@@ -27,6 +27,7 @@ pub fn extract_zip(filename: &PathBuf, install_dir: &PathBuf) {
             write_file(&mut file, &install_path, perms);
         }
     }
+    Ok(())
 }
 
 pub fn extract_targz(targz: &PathBuf, install_dir: &PathBuf) -> Result<(), io::Error>{
@@ -91,7 +92,7 @@ mod test {
         let pwd = env::current_dir().unwrap();
         let zipfile = pwd.join("fixture").join("test-extractor.zip");
         let extract_dir = TempDir::new("grnenv-rs").unwrap().into_path();
-        extract_zip(&zipfile, &extract_dir);
+        assert!(extract_zip(&zipfile, &extract_dir).is_ok());
         assert!(extract_dir.is_dir());
         assert!(extract_dir.join("test-extractor").is_dir());
         assert!(extract_dir.join("test-extractor").join("test.txt").exists());
