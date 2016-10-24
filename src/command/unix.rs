@@ -44,7 +44,7 @@ pub fn install(m: &ArgMatches) {
     println!("Obtaining Groonga version: {}",
              config.version.clone().unwrap());
     let groonga_dir = format!("groonga-{}", config.version.unwrap());
-    let groonga_source = format!("{}.zip", groonga_dir.clone());
+    let groonga_source = format!("{}.tar.gz", groonga_dir.clone());
     if config.versions_dir.join(groonga_dir.clone()).exists() {
         println!("Already installed. Ready to use it.");
         return ();
@@ -61,9 +61,10 @@ pub fn install(m: &ArgMatches) {
     let filename = downloader::file_download(&client,
                                              &*format!("{}/{}", BASE_URL, groonga_source),
                                              download_dir.clone(),
-                                             "groonga.zip")
+                                             "groonga.tar.gz")
         .expect("Failed to download");
-    extractor::extract_zip(&filename, &download_dir);
+    let tarball = fs::File::open(filename).unwrap();
+    assert!(extractor::extract_targz(&tarball, &download_dir).is_ok());
     assert!(env::set_current_dir(&download_dir.join(groonga_dir.clone())).is_ok());
 
     // TODO: Should specify on Linux?
