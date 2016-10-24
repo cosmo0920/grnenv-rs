@@ -58,13 +58,12 @@ pub fn install(m: &ArgMatches) {
         None => Client::new(),
         Some(host_port) => Client::with_http_proxy(host_port.0, host_port.1),
     };
-    let filename = downloader::file_download(&client,
-                                             &*format!("{}/{}", BASE_URL, groonga_source),
-                                             download_dir.clone(),
-                                             "groonga.tar.gz")
+    let targz = downloader::file_download(&client,
+                                          &*format!("{}/{}", BASE_URL, groonga_source),
+                                          download_dir.clone(),
+                                          "groonga.tar.gz")
         .expect("Failed to download");
-    let tarball = fs::File::open(filename).unwrap();
-    assert!(extractor::extract_targz(&tarball, &download_dir).is_ok());
+    assert!(extractor::extract_targz(&targz, &download_dir).is_ok());
     assert!(env::set_current_dir(&download_dir.join(groonga_dir.clone())).is_ok());
 
     // TODO: Should specify on Linux?

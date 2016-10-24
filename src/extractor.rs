@@ -29,7 +29,8 @@ pub fn extract_zip(filename: &PathBuf, install_dir: &PathBuf) {
     }
 }
 
-pub fn extract_targz(tarball: &File, install_dir: &PathBuf) -> Result<(), io::Error>{
+pub fn extract_targz(targz: &PathBuf, install_dir: &PathBuf) -> Result<(), io::Error>{
+    let tarball = try!(File::open(targz));
     let gz = try!(GzDecoder::new(tarball));
     let mut tar = Archive::new(gz);
     try!(tar.unpack(install_dir));
@@ -84,7 +85,6 @@ mod test {
     use super::*;
     use std::env;
     use tempdir::TempDir;
-    use std::fs::File;
 
     #[test]
     fn test_zip_extractor() {
@@ -103,9 +103,8 @@ mod test {
     fn test_targz_extractor() {
         let pwd = env::current_dir().unwrap();
         let targz = pwd.join("fixture").join("test-extractor.tar.gz");
-        let tarball = File::open(targz).unwrap();
         let extract_dir = TempDir::new("grnenv-rs").unwrap().into_path();
-        assert!(extract_targz(&tarball, &extract_dir).is_ok());
+        assert!(extract_targz(&targz, &extract_dir).is_ok());
         assert!(extract_dir.is_dir());
         assert!(extract_dir.join("test-extractor").is_dir());
         assert!(extract_dir.join("test-extractor").join("test.txt").exists());
