@@ -30,7 +30,7 @@ pub fn extract_zip(filename: &PathBuf, install_dir: &PathBuf) -> Result<(), io::
     Ok(())
 }
 
-pub fn extract_targz(targz: &PathBuf, install_dir: &PathBuf) -> Result<(), io::Error>{
+pub fn extract_targz(targz: &PathBuf, install_dir: &PathBuf) -> Result<(), io::Error> {
     let tarball = try!(File::open(targz));
     let gz = try!(GzDecoder::new(tarball));
     let mut tar = Archive::new(gz);
@@ -38,7 +38,10 @@ pub fn extract_targz(targz: &PathBuf, install_dir: &PathBuf) -> Result<(), io::E
     Ok(())
 }
 
-fn write_file(file: &mut zip::read::ZipFile, outpath: &Path, perms: Option<fs::Permissions>) -> Result<(), io::Error> {
+fn write_file(file: &mut zip::read::ZipFile,
+              outpath: &Path,
+              perms: Option<fs::Permissions>)
+              -> Result<(), io::Error> {
     let mut outfile = try!(File::create(&outpath));
     try!(io::copy(file, &mut outfile));
     if let Some(perms) = perms {
