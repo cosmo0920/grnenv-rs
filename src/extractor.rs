@@ -18,13 +18,13 @@ pub fn extract_zip(filename: &PathBuf, install_dir: &PathBuf) -> Result<(), io::
         let install_path = Path::new(install_dir.as_path()).join(outpath);
         println!("{}", install_path.display());
 
-        create_directory(install_path.parent().unwrap_or(Path::new("")), None);
+        try!(create_directory(install_path.parent().unwrap_or(Path::new("")), None));
         let perms = convert_permissions(file.unix_mode());
 
         if (&*file.name()).ends_with("/") {
-            create_directory(&install_path, perms);
+            try!(create_directory(&install_path, perms));
         } else {
-            write_file(&mut file, &install_path, perms);
+            try!(write_file(&mut file, &install_path, perms));
         }
     }
     Ok(())
@@ -38,19 +38,21 @@ pub fn extract_targz(targz: &PathBuf, install_dir: &PathBuf) -> Result<(), io::E
     Ok(())
 }
 
-fn write_file(file: &mut zip::read::ZipFile, outpath: &Path, perms: Option<fs::Permissions>) {
-    let mut outfile = File::create(&outpath).expect("Could not create a file in outpath.");
-    io::copy(file, &mut outfile).expect("Could not copy.");
+fn write_file(file: &mut zip::read::ZipFile, outpath: &Path, perms: Option<fs::Permissions>) -> Result<(), io::Error> {
+    let mut outfile = try!(File::create(&outpath));
+    try!(io::copy(file, &mut outfile));
     if let Some(perms) = perms {
-        fs::set_permissions(outpath, perms).expect("Failed to set permissions.");
+        try!(fs::set_permissions(outpath, perms));
     }
+    Ok(())
 }
 
-fn create_directory(outpath: &Path, perms: Option<fs::Permissions>) {
-    fs::create_dir_all(&outpath).unwrap();
+fn create_directory(outpath: &Path, perms: Option<fs::Permissions>) -> Result<(), io::Error> {
+    try!(fs::create_dir_all(&outpath));
     if let Some(perms) = perms {
-        fs::set_permissions(outpath, perms).unwrap();
+        try!(fs::set_permissions(outpath, perms));
     }
+    Ok(())
 }
 
 #[cfg(unix)]
