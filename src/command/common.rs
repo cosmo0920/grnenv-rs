@@ -27,7 +27,8 @@ pub fn versions() {
     println!("Installed Groonga:");
     println!("\tsystem");
     for entry in names {
-        println!("\t{}", entry);
+        let e = entry.split("-").collect::<Vec<_>>();
+        println!("\t{} ({})", e.get(1).unwrap_or(&""), e.get(2).unwrap_or(&"build from source"));
     }
 }
 
