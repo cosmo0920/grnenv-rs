@@ -6,7 +6,6 @@ use std::path::{Component, PathBuf, Path};
 use std::os::unix::fs::PermissionsExt;
 use flate2::read::GzDecoder;
 use tar::Archive;
-
 use zip;
 
 pub fn extract_zip(filename: &PathBuf, install_dir: &PathBuf) -> Result<(), io::Error> {
