@@ -28,7 +28,9 @@ pub fn versions() {
     println!("\tsystem");
     for entry in names {
         let e = entry.split("-").collect::<Vec<_>>();
-        println!("\t{} ({})", e.get(1).unwrap_or(&""), e.get(2).unwrap_or(&"build from source"));
+        println!("\t{} ({})",
+                 e.get(1).unwrap_or(&""),
+                 e.get(2).unwrap_or(&"build from source"));
     }
 }
 
