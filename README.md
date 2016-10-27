@@ -73,7 +73,7 @@ git clone and,
 
 ```powershell
 PS> cargo install
-PS> grnenv-rs init
+PS> grnenv init
 ```
 
 And then,
@@ -92,8 +92,8 @@ And write the following thing:
 then,
 
 ```
-PS> grnenv-rs install VERSION [--arch (x86|x64)]
-PS> grnenv-rs switch VERSION [--arch (x86|x64)]
+PS> grnenv install VERSION [--arch (x86|x64)]
+PS> grnenv switch VERSION [--arch (x86|x64)]
 ```
 
 Finally, restart powershell and use specified version of Groonga.
@@ -104,7 +104,7 @@ git clone and,
 
 ```bash
 $ cargo install
-$ grnenv-rs init
+$ grnenv init
 ```
 
 And write the following into .bash\_profile or .zsh\_profile etc.:
@@ -116,8 +116,8 @@ And write the following into .bash\_profile or .zsh\_profile etc.:
 then,
 
 ```
-$ grnenv-rs install VERSION
-$ grnenv-rs switch VERSION
+$ grnenv install VERSION
+$ grnenv switch VERSION
 ```
 
 Finally, restart your shell and use specified version of Groonga.
