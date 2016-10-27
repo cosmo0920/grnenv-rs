@@ -52,7 +52,8 @@ fn cli() -> App<'static, 'static> {
 
 #[cfg(not(windows))]
 fn default_main() {
-    let matches = cli().get_matches();
+    let mut app = cli();
+    let matches = app.clone().get_matches();
     match matches.subcommand() {
         ("init", _) => command::unix::init(),
         ("install", Some(m)) => command::unix::install(m),
@@ -61,13 +62,16 @@ fn default_main() {
         ("uninstall", Some(m)) => command::unix::uninstall(m),
         ("list", _) => command::unix::list(),
         (external, Some(ext_m)) => command::common::execute_external_command(external, ext_m),
-        (_, _) => unreachable!(),
+        (_, _) => {
+            let _ = app.print_help();
+        },
     }
 }
 
 #[cfg(windows)]
 fn default_main() {
-    let matches = cli().get_matches();
+    let mut app = cli();
+    let matches = app.clone().get_matches();
     match matches.subcommand() {
         ("init", _) => command::windows::init(),
         ("install", Some(m)) => command::windows::install(m),
@@ -76,6 +80,8 @@ fn default_main() {
         ("uninstall", Some(m)) => command::windows::uninstall(m),
         ("list", _) => command::windows::list(),
         (external, Some(ext_m)) => command::common::execute_external_command(external, ext_m),
-        (_, _) => unreachable!(),
+        (_, _) => {
+            let _ = app.print_help();
+        },
     }
 }
