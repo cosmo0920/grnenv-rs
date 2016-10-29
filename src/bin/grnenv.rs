@@ -15,7 +15,7 @@ fn cli() -> App<'static, 'static> {
     App::new("grnenv-rs")
         .version(crate_version!())
         .author(crate_authors!())
-        .about("A tiny tool for obtain and select multiple Groonga.")
+        .about("A tiny tool for switch multiple Groonga versions.")
         .setting(AppSettings::AllowExternalSubcommands)
         .subcommand(SubCommand::with_name("init").about("Prepare grnenv-rs."))
         .subcommand(SubCommand::with_name("install")
