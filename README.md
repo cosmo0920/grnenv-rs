@@ -14,7 +14,8 @@ Currently, only confirmed to work on Windows 10, macOS Sierra(10.12), and Ubuntu
 
 * Perhaps, Visual C++ Redistributable for Visual Studio 2015 is needed
 
-Binary upload plan is TBD.
+x86_64 msvc target binaries are found at:
+https://github.com/cosmo0920/grnenv-rs/releases
 
 ### Windows + build yourself
 
