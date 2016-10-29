@@ -26,7 +26,7 @@ pub fn init() {
         .join("WindowsPowerShell")
         .join("profile.ps1")
         .exists() {
-        println!(r#"Please create profile.ps1 the following place:
+        println!(r#"Please create profile.ps1 in the following place:
 
 $Env:USERPROFILE\Documents\WindowsPowerShell\profile.ps1
 
