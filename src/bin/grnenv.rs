@@ -47,7 +47,6 @@ fn cli() -> App<'static, 'static> {
                 .help("Select architectures. e.g.) x86, x64")
                 .takes_value(true)))
         .subcommand(SubCommand::with_name("list").about("Display installable Groonga versions"))
-
 }
 
 #[cfg(not(windows))]
