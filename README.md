@@ -42,8 +42,8 @@ https://github.com/sfackler/rust-openssl#windows
 You can use homebrewed openssl for compiling openssl-sys crate like this:
 
 ```bash
-export OPENSSL_INCLUDE_DIR=/usr/local/opt/openssl/include
-export DEP_OPENSSL_INCLUDE=/usr/local/opt/openssl/include
+export OPENSSL_INCLUDE_DIR=`brew --prefix openssl`/include
+export OPENSSL_LIB_DIR=`brew --prefix openssl`/lib
 ```
 And then, `cargo build`.
 
