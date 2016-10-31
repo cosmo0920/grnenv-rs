@@ -17,6 +17,8 @@ Currently, only confirmed to work on Windows 10, macOS Sierra(10.12), and Ubuntu
 x86_64 msvc target binaries are found at:
 https://github.com/cosmo0920/grnenv-rs/releases
 
+And then, put binaries into `$Env:USERPROFILE\bin`.
+
 ### Windows + build yourself
 
 * rustup
