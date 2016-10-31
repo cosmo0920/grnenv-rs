@@ -82,19 +82,19 @@ PS> grnenv init
 And then,
 Please create profile.ps1 the following place:
 
-```
+```powershell
 $Env:USERPROFILE\Documents\WindowsPowerShell\profile.ps1
 ```
 
 And write the following thing:
 
-```
+```powershell
 . $Env:USERPROFILE\.groonga\shims\bin\source-groonga.ps1
 ```
 
 then,
 
-```
+```powershell
 PS> grnenv install VERSION [--arch (x86|x64)]
 PS> grnenv switch VERSION [--arch (x86|x64)]
 ```
@@ -112,13 +112,13 @@ $ grnenv init
 
 And write the following into .bash\_profile or .zsh\_profile etc.:
 
-```
+```bash
 . $HOME/.groonga/shims/bin/source-groonga.sh
 ```
 
 then,
 
-```
+```bash
 $ grnenv install VERSION
 $ grnenv switch VERSION
 ```
