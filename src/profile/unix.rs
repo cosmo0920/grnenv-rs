@@ -17,7 +17,7 @@ pub fn create_profile_source(shim_dir: &PathBuf,
         "DYLD_LIBRARY_PATH".to_string()
     }
     if shim_dir.join("source-groonga.sh").exists() {
-        let _ = try!(fs::remove_file(shim_dir.join("source-groonga.sh")));
+        let _ = fs::remove_file(shim_dir.join("source-groonga.sh"))?;
     }
     let mut f = fs::File::create(shim_dir.join("source-groonga.sh").to_str().unwrap())
         .expect("Could not create a shell setting file.");
@@ -48,9 +48,9 @@ pub fn create_profile_source(shim_dir: &PathBuf,
 
 pub fn remove_grnenv_profile(shim_dir: &PathBuf) -> Result<(), io::Error> {
     if shim_dir.join("source-groonga.sh").exists() {
-        let _ = try!(fs::remove_file(shim_dir.join("source-groonga.sh")));
+        let _ = fs::remove_file(shim_dir.join("source-groonga.sh"))?;
     }
     // Create an empty file to prevent reading source-groonga.sh error.
-    let _ = try!(fs::File::create(shim_dir.join("source-groonga.sh").to_str().unwrap()));
+    let _ = fs::File::create(shim_dir.join("source-groonga.sh").to_str().unwrap())?;
     Ok(())
 }

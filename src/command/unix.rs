@@ -119,7 +119,7 @@ pub fn install(m: &ArgMatches) {
     fn inner_configure(config: &Config,
                        groonga_dir: String)
                        -> Result<process::ExitStatus, io::Error> {
-        let args = try!(build_conf::build_args(config, groonga_dir));
+        let args = build_conf::build_args(config, groonga_dir)?;
         let mut cmd = Command::new("./configure")
             .args(&*args)
             .stdout(Stdio::inherit())
@@ -131,8 +131,8 @@ pub fn install(m: &ArgMatches) {
     }
 
     fn inner_build() -> Result<process::ExitStatus, io::Error> {
-        let make = try!(build_conf::make()
-            .ok_or(io::Error::new(io::ErrorKind::NotFound, "make kind command is not found")));
+        let make = build_conf::make()
+            .ok_or(io::Error::new(io::ErrorKind::NotFound, "make kind command is not found"))?;
         let mut cmd = Command::new(make)
             .args(&["-j", &*format!("{}", num_cpus::get())])
             .stdout(Stdio::inherit())
@@ -144,8 +144,8 @@ pub fn install(m: &ArgMatches) {
     }
 
     fn inner_install() -> Result<process::ExitStatus, io::Error> {
-        let make = try!(build_conf::make()
-            .ok_or(io::Error::new(io::ErrorKind::NotFound, "make kind command is not found")));
+        let make = build_conf::make()
+            .ok_or(io::Error::new(io::ErrorKind::NotFound, "make kind command is not found"))?;
         let mut cmd = Command::new(make)
             .args(&["install"])
             .stdout(Stdio::inherit())

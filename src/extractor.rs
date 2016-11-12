@@ -9,31 +9,31 @@ use tar::Archive;
 use zip;
 
 pub fn extract_zip(filename: &PathBuf, install_dir: &PathBuf) -> Result<(), io::Error> {
-    let file = try!(File::open(filename));
-    let mut archive = try!(zip::ZipArchive::new(file));
+    let file = File::open(filename)?;
+    let mut archive = zip::ZipArchive::new(file)?;
     for i in 0..archive.len() {
-        let mut file = try!(archive.by_index(i));
+        let mut file = archive.by_index(i)?;
         let outpath = sanitize_filename(file.name());
         let install_path = Path::new(install_dir.as_path()).join(outpath);
         println!("{}", install_path.display());
 
-        try!(create_directory(install_path.parent().unwrap_or(Path::new("")), None));
+        create_directory(install_path.parent().unwrap_or(Path::new("")), None)?;
         let perms = convert_permissions(file.unix_mode());
 
         if (&*file.name()).ends_with("/") {
-            try!(create_directory(&install_path, perms));
+            create_directory(&install_path, perms)?;
         } else {
-            try!(write_file(&mut file, &install_path, perms));
+            write_file(&mut file, &install_path, perms)?;
         }
     }
     Ok(())
 }
 
 pub fn extract_targz(targz: &PathBuf, install_dir: &PathBuf) -> Result<(), io::Error> {
-    let tarball = try!(File::open(targz));
-    let gz = try!(GzDecoder::new(tarball));
+    let tarball = File::open(targz)?;
+    let gz = GzDecoder::new(tarball)?;
     let mut tar = Archive::new(gz);
-    try!(tar.unpack(install_dir));
+    tar.unpack(install_dir)?;
     Ok(())
 }
 
@@ -50,9 +50,9 @@ fn write_file(file: &mut zip::read::ZipFile,
 }
 
 fn create_directory(outpath: &Path, perms: Option<fs::Permissions>) -> Result<(), io::Error> {
-    try!(fs::create_dir_all(&outpath));
+    fs::create_dir_all(&outpath)?;
     if let Some(perms) = perms {
-        try!(fs::set_permissions(outpath, perms));
+        fs::set_permissions(outpath, perms)?;
     }
     Ok(())
 }

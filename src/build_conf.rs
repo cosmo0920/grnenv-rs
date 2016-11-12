@@ -51,9 +51,9 @@ pub fn parse_toml(config_content: String) -> BuildConfig {
 }
 
 pub fn read_build_args(config: &Config) -> Result<String, io::Error> {
-    let mut f = try!(fs::File::open(&config.build_conf));
+    let mut f = fs::File::open(&config.build_conf)?;
     let mut buffer = String::new();
-    try!(f.read_to_string(&mut buffer));
+    f.read_to_string(&mut buffer)?;
     let build_conf = parse_toml(buffer);
     Ok(build_conf.args)
 }
@@ -65,7 +65,7 @@ fn openssl_pkg_config_path() -> String {
 }
 
 pub fn build_args(config: &Config, groonga_dir: String) -> Result<Vec<String>, io::Error> {
-    let conf_args = try!(read_build_args(config));
+    let conf_args = read_build_args(config)?;
     let build_args: Vec<String> =
         conf_args.split_whitespace().into_iter().map(|e| e.to_owned()).collect();
     println!("{} with args: {:?}",
