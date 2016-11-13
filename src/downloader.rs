@@ -12,17 +12,17 @@ pub fn file_download<'a>(client: &'a Client,
                          filename: &'a str)
                          -> Result<PathBuf, HyperError> {
 
-    let mut res = try!(client.get(url)
+    let mut res = client.get(url)
         .header(Connection::close())
         .header(UserAgent(format!("grnenv-rs {}", crate_version!())))
-        .send());
+        .send()?;
     println!("{:?}", res);
     let mut body = vec![];
-    try!(res.read_to_end(&mut body));
+    res.read_to_end(&mut body)?;
     base_dir.push(filename);
     let mut f = File::create(base_dir.to_str().unwrap()).expect("Could not create file.");
     println!("{:?}", f);
-    try!(f.write_all(&body));
-    try!(f.sync_data());
+    f.write_all(&body)?;
+    f.sync_data()?;
     Ok(base_dir)
 }
