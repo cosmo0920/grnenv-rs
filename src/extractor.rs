@@ -41,10 +41,10 @@ fn write_file(file: &mut zip::read::ZipFile,
               outpath: &Path,
               perms: Option<fs::Permissions>)
               -> Result<(), io::Error> {
-    let mut outfile = try!(File::create(&outpath));
-    try!(io::copy(file, &mut outfile));
+    let mut outfile = File::create(&outpath)?;
+    io::copy(file, &mut outfile)?;
     if let Some(perms) = perms {
-        try!(fs::set_permissions(outpath, perms));
+        fs::set_permissions(outpath, perms)?;
     }
     Ok(())
 }
