@@ -2,6 +2,9 @@
 name = "grnenv-rs"
 version = "0.1.1"
 authors = ["Hiroshi Hatake <cosmo0920.wp@gmail.com>"]
+description = "grnenv is a tool to switch using multiple Groonga versions."
+repository = "https://github.com/cosmo0920/grnenv-rs"
+license = "MIT"
 
 [lib]
 name = "grnenvlib"
