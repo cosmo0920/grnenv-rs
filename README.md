@@ -28,7 +28,9 @@ And follow the descriptions:
 
 https://github.com/sfackler/rust-openssl#windows
 
-### *nix
+### *nix via cargo install
+
+Prepare the following dependent libraries:
 
 * C and C++ compilers like gcc or clang
 * autoconf
@@ -39,7 +41,13 @@ https://github.com/sfackler/rust-openssl#windows
 * openssl development package (libssl-dev or openssl-devel like package)
 * rust compiler (installed with rustup)
 
-#### For macOS
+And then,
+
+```bash
+$ cargo install grnenv-rs
+```
+
+#### For macOS via cargo install
 
 You can use homebrewed openssl for compiling openssl-sys crate like this:
 
@@ -47,7 +55,11 @@ You can use homebrewed openssl for compiling openssl-sys crate like this:
 export OPENSSL_INCLUDE_DIR=`brew --prefix openssl`/include
 export OPENSSL_LIB_DIR=`brew --prefix openssl`/lib
 ```
-And then, `cargo build`.
+And then,
+
+```bash
+$ cargo install grnenv-rs
+```
 
 #### Note
 
