@@ -12,7 +12,7 @@ Currently, only confirmed to work on Windows 10, macOS Sierra(10.12), and Ubuntu
 
 ### Windows + just download executables
 
-* Perhaps, Visual C++ Redistributable for Visual Studio 2015 is needed
+* Visual C++ Redistributable for Visual Studio 2015
 
 x86_64 msvc target binaries are found at:
 https://github.com/cosmo0920/grnenv-rs/releases
@@ -112,6 +112,12 @@ PS> grnenv switch VERSION [--arch (x86|x64)]
 ```
 
 Finally, restart powershell and use specified version of Groonga.
+
+If you get an error, you should specify execution policy as follows:
+
+```powershell
+PS> Set-ExecutionPolicy RemoteSigned
+```
 
 ### For *nix environment
 
