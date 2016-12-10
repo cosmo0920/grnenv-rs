@@ -146,3 +146,8 @@ Finally, restart your shell and use specified version of Groonga.
 ## LICENSE
 
 [MIT](LICENSE).
+
+## Related Articles
+
+* 複数の環境で動作するバージョン切り替えツールのgrnenv-rsを作ってみたお話
+http://qiita.com/cosmo0920/items/0a975fb4509114e9b189
