@@ -102,14 +102,13 @@ pub fn uninstall(m: &ArgMatches) {
     let mut choice = String::new();
     let arch = match config.arch.unwrap() {
         Cow::Borrowed(s) => s.to_owned(),
-        Cow::Owned(s) => s
+        Cow::Owned(s) => s,
     };
-    let groonga_dir = format!("groonga-{}-{}",
-                              config.version.unwrap(),
-                              arch);
+    let groonga_dir = format!("groonga-{}-{}", config.version.unwrap(), arch);
     if config.versions_dir.join(groonga_dir.clone()).exists() {
         println!("Uninstall Groonga version {}, arch {}? [y/N]",
-                 config.version.unwrap(), arch);
+                 config.version.unwrap(),
+                 arch);
         io::stdin().read_line(&mut choice).expect("Failed to read line");
         if choice == "y".to_owned() || choice == "Y".to_owned() {
             println!("Removing {}....", groonga_dir.clone());
