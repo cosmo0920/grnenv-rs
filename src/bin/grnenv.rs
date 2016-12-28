@@ -63,7 +63,7 @@ fn default_main() {
         (external, Some(ext_m)) => command::common::execute_external_command(external, ext_m),
         (_, _) => {
             let _ = app.print_help();
-        },
+        }
     }
 }
 
@@ -81,6 +81,6 @@ fn default_main() {
         (external, Some(ext_m)) => command::common::execute_external_command(external, ext_m),
         (_, _) => {
             let _ = app.print_help();
-        },
+        }
     }
 }

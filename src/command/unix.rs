@@ -178,11 +178,17 @@ pub fn switch(m: &ArgMatches) {
 
 pub fn uninstall(m: &ArgMatches) {
     let config = Config::from_matches(m);
+    let mut choice = String::new();
     let groonga_dir = format!("groonga-{}", config.version.unwrap());
     if config.versions_dir.join(groonga_dir.clone()).exists() {
-        println!("Removing {}....", groonga_dir.clone());
-        fs::remove_dir_all(&config.versions_dir.join(groonga_dir))
-            .expect("Could not remove specified directory.");
+        println!("Uninstall Groonga version {}? [y/N]",
+                 config.version.unwrap());
+        io::stdin().read_line(&mut choice).expect("Failed to read line");
+        if choice == "y".to_owned() || choice == "Y".to_owned() {
+            println!("Removing {}....", groonga_dir.clone());
+            fs::remove_dir_all(&config.versions_dir.join(groonga_dir))
+                .expect("Could not remove specified directory.");
+        }
     } else {
         println!("{} is not installed!", groonga_dir.clone());
         process::exit(1);
