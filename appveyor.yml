@@ -10,6 +10,10 @@ environment:
       BITS: 64
       RUSTVER: 1.13.0
       OPENSSLVER: 1_0_2j
+    - TARGET: x86_64-pc-windows-msvc
+      BITS: 64
+      RUSTVER: 1.14.0
+      OPENSSLVER: 1_0_2j
 install:
   - ps: Start-FileDownload "http://slproweb.com/download/Win${env:BITS}OpenSSL-${env:OPENSSLVER}.exe"
   - Win%BITS%OpenSSL-%OPENSSLVER%.exe /SILENT /VERYSILENT /SP- /DIR="C:\OpenSSL"
