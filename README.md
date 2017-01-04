@@ -30,7 +30,7 @@ https://github.com/sfackler/rust-openssl#windows
 
 ### *nix via cargo install
 
-Prepare the following dependent libraries:
+Prepare the following dependent libraries and tool chains:
 
 * C and C++ compilers like gcc or clang
 * autoconf
@@ -128,7 +128,7 @@ $ cargo install
 $ grnenv init
 ```
 
-And write the following into .bash\_profile or .zsh\_profile etc.:
+And write the following content into .bash\_profile or .zsh\_profile etc.:
 
 ```bash
 . $HOME/.groonga/shims/bin/source-groonga.sh
