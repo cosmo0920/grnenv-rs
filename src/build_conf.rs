@@ -4,18 +4,18 @@ use std::io::prelude::*;
 use std::io;
 use std::process;
 use toml;
-use rustc_serialize::Decodable;
+use toml::de::Error;
 use config::Config;
 
 const DEFAULT_ARGS: &'static str = "\"--with-zlib --with-ssl --enable-mruby --without-libstemmer \
                                     --disable-zeromq\"";
 
-#[derive(Debug, PartialEq, Eq, RustcDecodable, RustcEncodable)]
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Configuration {
     settings: BuildConfig,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, RustcDecodable, RustcEncodable)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct BuildConfig {
     args: String,
 }
@@ -37,13 +37,8 @@ pub fn write_conf(config: &Config) {
 
 pub fn parse_toml(config_content: String) -> BuildConfig {
     println!("config:\n{}", config_content);
-    let mut parser = toml::Parser::new(&*config_content);
-    let toml = match parser.parse() {
-        Some(toml) => toml::Value::Table(toml),
-        None => panic!("Couldn't parse toml"),
-    };
-    let mut decoder = toml::Decoder::new(toml);
-    let config = match Configuration::decode(&mut decoder) {
+    let configuration: Result<Configuration, Error> = toml::from_str(&*config_content);
+    let config = match configuration {
         Ok(config) => config,
         Err(_) => panic!("Couldn't decode toml with Configuration struct"),
     };

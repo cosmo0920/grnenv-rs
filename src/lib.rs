@@ -6,7 +6,9 @@ extern crate flate2;
 #[macro_use]
 extern crate clap;
 extern crate kuchiki;
-extern crate rustc_serialize;
+extern crate serde;
+#[macro_use]
+extern crate serde_derive;
 extern crate toml;
 #[cfg(not(windows))]
 extern crate libc;
