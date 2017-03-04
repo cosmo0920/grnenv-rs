@@ -22,11 +22,6 @@ And then, put binaries into `$Env:USERPROFILE\bin`.
 ### Windows + build yourself
 
 * rustup
-* [OpenSSL for MSVC](https://slproweb.com/products/Win32OpenSSL.html)
-
-And follow the descriptions:
-
-https://github.com/sfackler/rust-openssl#windows
 
 ### *nix via cargo install
 
@@ -38,35 +33,12 @@ Prepare the following dependent libraries and tool chains:
 * libtool
 * pkg-config
 * pcre
-* openssl development package (libssl-dev or openssl-devel like package)
 * rust compiler (installed with rustup)
 
 And then,
 
 ```bash
 $ cargo install grnenv-rs
-```
-
-#### For macOS via cargo install
-
-You can use homebrewed openssl for compiling openssl-sys crate like this:
-
-```bash
-export OPENSSL_INCLUDE_DIR=`brew --prefix openssl`/include
-export OPENSSL_LIB_DIR=`brew --prefix openssl`/lib
-```
-And then,
-
-```bash
-$ cargo install grnenv-rs
-```
-
-#### Note
-
-If you installed openssl library in non-standard place, please specify `OPENSSL_PKG_CONFIG_PATH` environment variable like this:
-
-```bash
-$ export OPENSSL_PKG_CONFIG_PATH=/path/to/installed/openssl/lib/pkgconfig
 ```
 
 ## Plugin system
@@ -84,10 +56,8 @@ If you want to support Windows in subcommand, it recommends to use Rust language
 
 ### For Windows
 
-git clone and,
 
 ```powershell
-PS> cargo install
 PS> grnenv init
 ```
 
@@ -121,10 +91,7 @@ PS> Set-ExecutionPolicy RemoteSigned
 
 ### For *nix environment
 
-git clone and,
-
 ```bash
-$ cargo install
 $ grnenv init
 ```
 
