@@ -10,12 +10,12 @@ use config::Config;
 const DEFAULT_ARGS: &'static str = "\"--with-zlib --with-ssl --enable-mruby --without-libstemmer \
                                     --disable-zeromq\"";
 
-#[derive(Debug, PartialEq, Eq,Serialize, Deserialize)]
+#[derive(Debug, PartialEq, Eq, Serialize, Deserialize)]
 pub struct Configuration {
     settings: BuildConfig,
 }
 
-#[derive(Debug, Clone, PartialEq, Eq, Serialize,Deserialize)]
+#[derive(Debug, Clone, PartialEq, Eq, Serialize, Deserialize)]
 pub struct BuildConfig {
     args: String,
 }
