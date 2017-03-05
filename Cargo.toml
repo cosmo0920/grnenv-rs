@@ -1,6 +1,6 @@
 [package]
 name = "grnenv-rs"
-version = "0.1.2"
+version = "0.2.0"
 authors = ["Hiroshi Hatake <cosmo0920.wp@gmail.com>"]
 description = "grnenv is a tool to switch using multiple Groonga versions."
 repository = "https://github.com/cosmo0920/grnenv-rs"
