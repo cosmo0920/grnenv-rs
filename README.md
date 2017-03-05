@@ -25,7 +25,7 @@ And then, put binaries into `$Env:USERPROFILE\bin`.
 
 ### *nix via cargo install
 
-Prepare the following dependent libraries and tool chains:
+Prepare the following dependent libraries:
 
 * C and C++ compilers like gcc or clang
 * autoconf
@@ -33,6 +33,27 @@ Prepare the following dependent libraries and tool chains:
 * libtool
 * pkg-config
 * pcre
+
+#### download executables
+
+##### x86\_64 Linux
+
+x86_64 musl Linux binaries are found at:
+https://github.com/cosmo0920/grnenv-rs/releases
+
+* grnenv-rs-VERSION-x86_64-unknown-linux-musl.tar.xz
+
+##### x86\_64 macOS
+
+x86_64 macOS binaries are found at:
+https://github.com/cosmo0920/grnenv-rs/releases
+
+* grnenv-rs-VERSION-x86_64-apple-darwin.zip
+
+#### build grnenv yourself
+
+Prepare the following toolchain:
+
 * rust compiler (installed with rustup)
 
 And then,
