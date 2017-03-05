@@ -43,12 +43,16 @@ https://github.com/cosmo0920/grnenv-rs/releases
 
 * grnenv-rs-VERSION-x86_64-unknown-linux-musl.tar.xz
 
+And then, put binaries into `$HOME\bin`.
+
 ##### x86\_64 macOS
 
 x86_64 macOS binaries are found at:
 https://github.com/cosmo0920/grnenv-rs/releases
 
 * grnenv-rs-VERSION-x86_64-apple-darwin.zip
+
+And then, put binaries into `$HOME\bin`.
 
 #### build grnenv yourself
 
