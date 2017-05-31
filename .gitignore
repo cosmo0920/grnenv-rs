@@ -9,3 +9,4 @@ target
 *.nav
 *.synctex.gz
 *.out
+.DS_Store
