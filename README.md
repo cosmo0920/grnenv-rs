@@ -87,10 +87,10 @@ PS> grnenv init
 ```
 
 And then,
-Please create profile.ps1 the following place:
+Please create profile.ps1 with the following command:
 
 ```powershell
-$Env:USERPROFILE\Documents\WindowsPowerShell\profile.ps1
+notepad $profile.CurrentUserCurrentHost
 ```
 
 And write the following thing:
