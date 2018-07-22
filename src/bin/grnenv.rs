@@ -1,5 +1,4 @@
 extern crate tempdir;
-extern crate hyper;
 extern crate grnenvlib;
 #[macro_use]
 extern crate clap;

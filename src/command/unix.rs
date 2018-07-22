@@ -8,7 +8,7 @@ use kuchiki;
 
 use clap::ArgMatches;
 use tempdir::TempDir;
-use hyper::{Client, Url};
+use reqwest::{Client, Proxy, Url};
 use config::Config;
 use extractor;
 use downloader;
@@ -56,7 +56,8 @@ pub fn install(m: &ArgMatches) {
 
     let client = match maybe_proxy {
         None => Client::new(),
-        Some(host_port) => Client::with_http_proxy(host_port.0, host_port.1),
+        Some(_) => Client::builder().proxy(Proxy::http(BASE_URL).unwrap()).build()
+            .expect("Could not create proxy."),
     };
     let targz = downloader::file_download(&client,
                                           &*format!("{}/{}", BASE_URL, groonga_source),
@@ -196,30 +197,35 @@ pub fn uninstall(m: &ArgMatches) {
 }
 
 pub fn list() {
+    extern crate env_proxy;
     use kuchiki::traits::*;
-    use command::common::MaybeProxyUrl;
 
     let base_url: &'static str = "http://packages.groonga.org/source/groonga";
-    let maybe_proxy_url = MaybeProxyUrl { url: Url::parse(base_url).unwrap() };
-    if let Ok(doc) = kuchiki::parse_html().from_http(maybe_proxy_url) {
-        let docs = doc.select("tr")
-            .unwrap_or_else(|e| panic!("failed to find tr elements: {:?}", e))
-            .collect::<Vec<_>>();
-        println!("Installable Groonga:");
-        for handle in &docs {
-            let texts = handle.as_node().descendants().text_nodes().collect::<Vec<_>>();
-            if let Some(text) = texts.first() {
-                let package = text.as_node().text_contents();
-                if package.contains("groonga") && package.contains("zip") &&
-                   !package.contains("asc") {
+    let maybe_proxy = env_proxy::for_url(&Url::parse(base_url).unwrap());
+    let client = match maybe_proxy {
+        None => Client::new(),
+        Some(_) => Client::builder().proxy(Proxy::http(base_url).unwrap()).build()
+            .expect("Could not create proxy."),
+    };
+    let page = downloader::page_download(&client,
+                                         &*format!("{}", base_url))
+        .expect("Failed to download page");
+    let doc = kuchiki::parse_html().one(page);
+    let docs = doc.select("tr")
+        .unwrap_or_else(|e| panic!("failed to find tr elements: {:?}", e))
+        .collect::<Vec<_>>();
+    println!("Installable Groonga:");
+    for handle in &docs {
+        let texts = handle.as_node().descendants().text_nodes().collect::<Vec<_>>();
+        if let Some(text) = texts.first() {
+            let package = text.as_node().text_contents();
+            if package.contains("groonga") && package.contains("zip") &&
+                !package.contains("asc") {
                     let package = package.split(".zip").collect::<Vec<_>>();
                     let pkg =
                         package.first().unwrap_or(&"").to_owned().split("-").collect::<Vec<_>>();
                     println!("\t{}", pkg.get(1).unwrap_or(&""));
                 }
-            }
         }
-    } else {
-        println!("{}", "The page couldn't be fetched");
     }
 }

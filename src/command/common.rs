@@ -6,9 +6,9 @@ use std::process::{Command, Stdio};
 
 use clap::ArgMatches;
 use kuchiki::traits::*;
-use hyper::{Client, Url};
-use hyper::client::Response;
-use hyper::Result as HyperResult;
+use reqwest::{Client, Url};
+use reqwest::Response;
+use reqwest::Result as ReqwestResult;
 use util;
 
 pub fn versions() {
@@ -31,23 +31,6 @@ pub fn versions() {
         println!("\t{} ({})",
                  e.get(1).unwrap_or(&""),
                  e.get(2).unwrap_or(&"build from source"));
-    }
-}
-
-pub struct MaybeProxyUrl {
-    pub url: Url,
-}
-
-impl<'a> IntoResponse for MaybeProxyUrl {
-    fn into_response(self) -> HyperResult<Response> {
-        extern crate env_proxy;
-        let maybe_proxy = env_proxy::for_url(&self.url);
-
-        let client = match maybe_proxy {
-            None => Client::new(),
-            Some(host_port) => Client::with_http_proxy(host_port.0, host_port.1),
-        };
-        client.get(self.url).send()
     }
 }
 

@@ -1,5 +1,5 @@
 extern crate tempdir;
-extern crate hyper;
+extern crate reqwest;
 extern crate zip;
 extern crate tar;
 extern crate flate2;
