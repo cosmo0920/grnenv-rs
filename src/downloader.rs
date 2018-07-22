@@ -1,31 +1,10 @@
 use std::fs::File;
-use std::io;
 use std::io::prelude::*;
 use std::path::PathBuf;
 
 use reqwest::header::{Connection, UserAgent};
 use reqwest::Client;
-use reqwest::Error as RequestError;
-
-#[derive(Debug)]
-pub enum GrnEnvError {
-    ReqwestError(RequestError),
-    IO(io::Error),
-    #[doc(hidden)]
-    Dummy(String),
-}
-
-impl From<RequestError> for GrnEnvError {
-    fn from(err: RequestError) -> GrnEnvError {
-        GrnEnvError::ReqwestError(err)
-    }
-}
-
-impl From<io::Error> for GrnEnvError {
-    fn from(err: io::Error) -> GrnEnvError {
-        GrnEnvError::IO(err)
-    }
-}
+use error::GrnEnvError;
 
 pub fn file_download<'a>(
     client: &'a Client,

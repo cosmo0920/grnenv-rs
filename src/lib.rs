@@ -20,6 +20,7 @@ pub mod build_conf;
 pub mod command;
 pub mod config;
 pub mod downloader;
+pub mod error;
 pub mod extractor;
 pub mod profile;
 pub mod util;
