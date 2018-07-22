@@ -1,21 +1,18 @@
+use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::env;
 use std::process;
 use std::process::{Command, Stdio};
 
 use clap::ArgMatches;
-use kuchiki::traits::*;
-use hyper::{Client, Url};
-use hyper::client::Response;
-use hyper::Result as HyperResult;
 use util;
 
 pub fn versions() {
     let groonga_versioned_dir = util::obtain_groonga_versioned_path();
     let paths = fs::read_dir(&Path::new(&groonga_versioned_dir)).unwrap();
 
-    let names = paths.filter_map(|entry| {
+    let names = paths
+        .filter_map(|entry| {
             entry.ok().and_then(|e| {
                 e.path()
                     .file_name()
@@ -28,26 +25,11 @@ pub fn versions() {
     println!("\tsystem");
     for entry in names {
         let e = entry.split("-").collect::<Vec<_>>();
-        println!("\t{} ({})",
-                 e.get(1).unwrap_or(&""),
-                 e.get(2).unwrap_or(&"build from source"));
-    }
-}
-
-pub struct MaybeProxyUrl {
-    pub url: Url,
-}
-
-impl<'a> IntoResponse for MaybeProxyUrl {
-    fn into_response(self) -> HyperResult<Response> {
-        extern crate env_proxy;
-        let maybe_proxy = env_proxy::for_url(&self.url);
-
-        let client = match maybe_proxy {
-            None => Client::new(),
-            Some(host_port) => Client::with_http_proxy(host_port.0, host_port.1),
-        };
-        client.get(self.url).send()
+        println!(
+            "\t{} ({})",
+            e.get(1).unwrap_or(&""),
+            e.get(2).unwrap_or(&"build from source")
+        );
     }
 }
 
@@ -72,7 +54,8 @@ pub fn execute_external_command(cmd: &str, ext_m: &ArgMatches) {
         .args(&ext_args.as_slice()[0..])
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
-        .spawn() {
+        .spawn()
+    {
         Ok(_) => return (),
         Err(e) => e,
     };
@@ -99,5 +82,7 @@ fn is_executable<P: AsRef<Path>>(path: P) -> bool {
 }
 #[cfg(windows)]
 fn is_executable<P: AsRef<Path>>(path: P) -> bool {
-    fs::metadata(path).map(|metadata| metadata.is_file()).unwrap_or(false)
+    fs::metadata(path)
+        .map(|metadata| metadata.is_file())
+        .unwrap_or(false)
 }

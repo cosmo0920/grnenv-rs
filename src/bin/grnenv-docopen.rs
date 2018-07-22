@@ -34,7 +34,8 @@ fn main() {
         .args(&arg)
         .stdout(Stdio::null())
         .stderr(Stdio::null())
-        .spawn() {
+        .spawn()
+    {
         Ok(_) => return (),
         Err(e) => {
             println!("Failed to execute docopen subcommand. reason: {:?}", e);

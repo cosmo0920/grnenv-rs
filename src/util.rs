@@ -1,7 +1,7 @@
-use std::env;
-use std::path::PathBuf;
 #[cfg(windows)]
 use kernel32::GetNativeSystemInfo;
+use std::env;
+use std::path::PathBuf;
 
 pub fn obtain_groonga_versioned_path() -> PathBuf {
     let base_dir = env::home_dir().unwrap();
@@ -37,8 +37,8 @@ pub fn obtain_arch() -> Option<String> {
 #[cfg(not(windows))]
 pub fn obtain_arch() -> Option<String> {
     use libc;
-    use std::mem;
     use std::ffi::CStr;
+    use std::mem;
 
     let mut sys_info;
     let machine = unsafe {
@@ -87,7 +87,9 @@ mod test {
         let stub_home = stub_home();
         let _ = env::set_var("HOME", stub_home.clone());
         let path = obtain_groonga_versioned_path();
-        let versioned = PathBuf::from(stub_home.clone()).join(".groonga").join("versions");
+        let versioned = PathBuf::from(stub_home.clone())
+            .join(".groonga")
+            .join("versions");
         assert_eq!(versioned, path);
         let _ = env::set_var("HOME", home);
     }

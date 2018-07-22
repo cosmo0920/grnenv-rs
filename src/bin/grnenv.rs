@@ -1,10 +1,9 @@
-extern crate tempdir;
-extern crate hyper;
 extern crate grnenvlib;
+extern crate tempdir;
 #[macro_use]
 extern crate clap;
 
-use clap::{Arg, App, AppSettings, SubCommand};
+use clap::{App, AppSettings, Arg, SubCommand};
 use grnenvlib::command;
 
 fn main() {
@@ -18,34 +17,46 @@ fn cli() -> App<'static, 'static> {
         .about("A tiny tool for switch multiple Groonga versions.")
         .setting(AppSettings::AllowExternalSubcommands)
         .subcommand(SubCommand::with_name("init").about("Prepare grnenv-rs."))
-        .subcommand(SubCommand::with_name("install")
-            .about("Install a given Groonga version and arch")
-            .arg(Arg::with_name("VERSION").required(true))
-            .arg(Arg::with_name("arch")
-                .short("a")
-                .long("arch")
-                .value_name("ARCH")
-                .help("Select architectures. e.g.) x86, x64")
-                .takes_value(true)))
-        .subcommand(SubCommand::with_name("switch")
-            .about("Switch Groonga with given version and arch")
-            .arg(Arg::with_name("VERSION").required(true))
-            .arg(Arg::with_name("arch")
-                .short("a")
-                .long("arch")
-                .value_name("ARCH")
-                .help("Select architectures. e.g.) x86, x64")
-                .takes_value(true)))
+        .subcommand(
+            SubCommand::with_name("install")
+                .about("Install a given Groonga version and arch")
+                .arg(Arg::with_name("VERSION").required(true))
+                .arg(
+                    Arg::with_name("arch")
+                        .short("a")
+                        .long("arch")
+                        .value_name("ARCH")
+                        .help("Select architectures. e.g.) x86, x64")
+                        .takes_value(true),
+                ),
+        )
+        .subcommand(
+            SubCommand::with_name("switch")
+                .about("Switch Groonga with given version and arch")
+                .arg(Arg::with_name("VERSION").required(true))
+                .arg(
+                    Arg::with_name("arch")
+                        .short("a")
+                        .long("arch")
+                        .value_name("ARCH")
+                        .help("Select architectures. e.g.) x86, x64")
+                        .takes_value(true),
+                ),
+        )
         .subcommand(SubCommand::with_name("versions").about("Display installed Groonga versions"))
-        .subcommand(SubCommand::with_name("uninstall")
-            .about("Uninstall a given Groonga version and arch")
-            .arg(Arg::with_name("VERSION").required(true))
-            .arg(Arg::with_name("arch")
-                .short("a")
-                .long("arch")
-                .value_name("ARCH")
-                .help("Select architectures. e.g.) x86, x64")
-                .takes_value(true)))
+        .subcommand(
+            SubCommand::with_name("uninstall")
+                .about("Uninstall a given Groonga version and arch")
+                .arg(Arg::with_name("VERSION").required(true))
+                .arg(
+                    Arg::with_name("arch")
+                        .short("a")
+                        .long("arch")
+                        .value_name("ARCH")
+                        .help("Select architectures. e.g.) x86, x64")
+                        .takes_value(true),
+                ),
+        )
         .subcommand(SubCommand::with_name("list").about("Display installable Groonga versions"))
 }
 

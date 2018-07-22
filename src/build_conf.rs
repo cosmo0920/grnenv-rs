@@ -1,11 +1,11 @@
+use config::Config;
 use std::env;
 use std::fs;
-use std::io::prelude::*;
 use std::io;
+use std::io::prelude::*;
 use std::process;
 use toml;
 use toml::de::Error;
-use config::Config;
 
 const DEFAULT_ARGS: &'static str = "\"--with-zlib --with-ssl --enable-mruby --without-libstemmer \
                                     --disable-zeromq\"";
@@ -61,14 +61,23 @@ fn openssl_pkg_config_path() -> String {
 
 pub fn build_args(config: &Config, groonga_dir: String) -> Result<Vec<String>, io::Error> {
     let conf_args = read_build_args(config)?;
-    let build_args: Vec<String> =
-        conf_args.split_whitespace().into_iter().map(|e| e.to_owned()).collect();
-    println!("{} with args: {:?}",
-             config.versions_dir.join(groonga_dir.clone()).display(),
-             build_args.clone());
-    let mut args = vec![format!("--prefix={}",
-                                config.versions_dir.join(groonga_dir.clone()).display()),
-                        format!("PKG_CONFIG_PATH={}", openssl_pkg_config_path())];
+    let build_args: Vec<String> = conf_args
+        .split_whitespace()
+        .into_iter()
+        .map(|e| e.to_owned())
+        .collect();
+    println!(
+        "{} with args: {:?}",
+        config.versions_dir.join(groonga_dir.clone()).display(),
+        build_args.clone()
+    );
+    let mut args = vec![
+        format!(
+            "--prefix={}",
+            config.versions_dir.join(groonga_dir.clone()).display()
+        ),
+        format!("PKG_CONFIG_PATH={}", openssl_pkg_config_path()),
+    ];
     args.extend(build_args.iter().cloned());
     Ok(args)
 }
@@ -149,7 +158,9 @@ mod test {
 args = "an example arguments"
 "#;
         let settings = parse_toml(toml.to_string());
-        let expected = BuildConfig { args: "an example arguments".to_string() };
+        let expected = BuildConfig {
+            args: "an example arguments".to_string(),
+        };
         assert_eq!(expected, settings);
     }
 }

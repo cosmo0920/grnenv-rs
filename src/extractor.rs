@@ -1,10 +1,10 @@
+use flate2::read::GzDecoder;
 use std::fs;
-use std::io;
 use std::fs::File;
-use std::path::{Component, PathBuf, Path};
+use std::io;
 #[cfg(unix)]
 use std::os::unix::fs::PermissionsExt;
-use flate2::read::GzDecoder;
+use std::path::{Component, Path, PathBuf};
 use tar::Archive;
 use zip;
 
@@ -37,10 +37,11 @@ pub fn extract_targz(targz: &PathBuf, install_dir: &PathBuf) -> Result<(), io::E
     Ok(())
 }
 
-fn write_file(file: &mut zip::read::ZipFile,
-              outpath: &Path,
-              perms: Option<fs::Permissions>)
-              -> Result<(), io::Error> {
+fn write_file(
+    file: &mut zip::read::ZipFile,
+    outpath: &Path,
+    perms: Option<fs::Permissions>,
+) -> Result<(), io::Error> {
     let mut outfile = File::create(&outpath)?;
     io::copy(file, &mut outfile)?;
     if let Some(perms) = perms {
@@ -101,7 +102,13 @@ mod test {
         assert!(extract_dir.join("test-extractor").is_dir());
         assert!(extract_dir.join("test-extractor").join("test.txt").exists());
         assert!(extract_dir.join("test-extractor").join("nested").is_dir());
-        assert!(extract_dir.join("test-extractor").join("nested").join("test.txt").exists());
+        assert!(
+            extract_dir
+                .join("test-extractor")
+                .join("nested")
+                .join("test.txt")
+                .exists()
+        );
     }
 
     #[test]
@@ -114,6 +121,12 @@ mod test {
         assert!(extract_dir.join("test-extractor").is_dir());
         assert!(extract_dir.join("test-extractor").join("test.txt").exists());
         assert!(extract_dir.join("test-extractor").join("nested").is_dir());
-        assert!(extract_dir.join("test-extractor").join("nested").join("test.txt").exists());
+        assert!(
+            extract_dir
+                .join("test-extractor")
+                .join("nested")
+                .join("test.txt")
+                .exists()
+        );
     }
 }

@@ -1,6 +1,6 @@
-use std::path::PathBuf;
-use std::borrow::Cow;
 use clap::ArgMatches;
+use std::borrow::Cow;
+use std::path::PathBuf;
 use util;
 
 #[derive(Debug, Clone, PartialEq, Eq)]
@@ -93,9 +93,16 @@ mod test {
         let stub_home = stub_home();
         let _ = env::set_var("HOME", stub_home.clone());
         let install_dir = PathBuf::from(stub_home.clone()).join(".groonga");
-        let versions_dir = PathBuf::from(stub_home.clone()).join(".groonga").join("versions");
-        let shim_dir = PathBuf::from(stub_home.clone()).join(".groonga").join("shims").join("bin");
-        let build_conf = PathBuf::from(stub_home.clone()).join(".groonga").join("build.toml");
+        let versions_dir = PathBuf::from(stub_home.clone())
+            .join(".groonga")
+            .join("versions");
+        let shim_dir = PathBuf::from(stub_home.clone())
+            .join(".groonga")
+            .join("shims")
+            .join("bin");
+        let build_conf = PathBuf::from(stub_home.clone())
+            .join(".groonga")
+            .join("build.toml");
         let expected = Config {
             install_dir: install_dir,
             shim_dir: shim_dir,
