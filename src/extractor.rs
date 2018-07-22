@@ -31,7 +31,7 @@ pub fn extract_zip(filename: &PathBuf, install_dir: &PathBuf) -> Result<(), io::
 
 pub fn extract_targz(targz: &PathBuf, install_dir: &PathBuf) -> Result<(), io::Error> {
     let tarball = File::open(targz)?;
-    let gz = GzDecoder::new(tarball)?;
+    let gz = GzDecoder::new(tarball);
     let mut tar = Archive::new(gz);
     tar.unpack(install_dir)?;
     Ok(())
