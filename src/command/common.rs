@@ -5,10 +5,6 @@ use std::process;
 use std::process::{Command, Stdio};
 
 use clap::ArgMatches;
-use kuchiki::traits::*;
-use reqwest::{Client, Url};
-use reqwest::Response;
-use reqwest::Result as ReqwestResult;
 use util;
 
 pub fn versions() {
