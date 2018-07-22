@@ -5,7 +5,6 @@ use std::io;
 use std::process;
 
 use clap::ArgMatches;
-use hyper::{Client, Url};
 use kuchiki;
 use tempdir::TempDir;
 
@@ -13,6 +12,7 @@ use config::Config;
 use downloader;
 use extractor;
 use profile;
+use reqwest::{Client, Proxy, Url};
 
 pub fn init() {
     let config = Config::new();
@@ -73,7 +73,10 @@ pub fn install(m: &ArgMatches) {
 
     let client = match maybe_proxy {
         None => Client::new(),
-        Some(host_port) => Client::with_http_proxy(host_port.0, host_port.1),
+        Some(_) => Client::builder()
+            .proxy(Proxy::http(BASE_URL).unwrap())
+            .build()
+            .expect("Could not create proxy."),
     };
     let filename = downloader::file_download(
         &client,
@@ -139,44 +142,48 @@ pub fn uninstall(m: &ArgMatches) {
 }
 
 pub fn list() {
-    use command::common::MaybeProxyUrl;
+    extern crate env_proxy;
     use kuchiki::traits::*;
 
     let base_url: &'static str = "http://packages.groonga.org/windows/groonga";
-    let maybe_proxy_url = MaybeProxyUrl {
-        url: Url::parse(base_url).unwrap(),
+    let maybe_proxy = env_proxy::for_url(&Url::parse(base_url).unwrap());
+    let client = match maybe_proxy {
+        None => Client::new(),
+        Some(_) => Client::builder()
+            .proxy(Proxy::http(base_url).unwrap())
+            .build()
+            .expect("Could not create proxy."),
     };
-    if let Ok(doc) = kuchiki::parse_html().from_http(maybe_proxy_url) {
-        let docs = doc.select("tr").unwrap().collect::<Vec<_>>();
-        println!("Installable Groonga:");
-        for handle in &docs {
-            let texts = handle
-                .as_node()
-                .descendants()
-                .text_nodes()
-                .collect::<Vec<_>>();
-            if let Some(text) = texts.first() {
-                let package = text.as_node().text_contents();
-                if package.contains("groonga")
-                    && package.contains("zip")
-                    && (package.contains("x86") || package.contains("x64"))
-                {
-                    let package = package.split(".zip").collect::<Vec<_>>();
-                    let pkg = package
-                        .first()
-                        .unwrap_or(&"")
-                        .to_owned()
-                        .split("-")
-                        .collect::<Vec<_>>();
-                    println!(
-                        "\t{} --arch {}",
-                        pkg.get(1).unwrap_or(&""),
-                        pkg.get(2).unwrap_or(&"")
-                    );
-                }
+    let page = downloader::page_download(&client, &*format!("{}", base_url))
+        .expect("Failed to download page");
+    let doc = kuchiki::parse_html().one(page);
+    let docs = doc.select("tr").unwrap().collect::<Vec<_>>();
+    println!("Installable Groonga:");
+    for handle in &docs {
+        let texts = handle
+            .as_node()
+            .descendants()
+            .text_nodes()
+            .collect::<Vec<_>>();
+        if let Some(text) = texts.first() {
+            let package = text.as_node().text_contents();
+            if package.contains("groonga")
+                && package.contains("zip")
+                && (package.contains("x86") || package.contains("x64"))
+            {
+                let package = package.split(".zip").collect::<Vec<_>>();
+                let pkg = package
+                    .first()
+                    .unwrap_or(&"")
+                    .to_owned()
+                    .split("-")
+                    .collect::<Vec<_>>();
+                println!(
+                    "\t{} --arch {}",
+                    pkg.get(1).unwrap_or(&""),
+                    pkg.get(2).unwrap_or(&"")
+                );
             }
         }
-    } else {
-        println!("{}", "The page couldn't be fetched");
     }
 }
