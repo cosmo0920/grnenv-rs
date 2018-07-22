@@ -3,9 +3,9 @@ use std::io;
 use std::io::prelude::*;
 use std::path::PathBuf;
 
-use reqwest::Error as RequestError;
-use reqwest::Client;
 use reqwest::header::{Connection, UserAgent};
+use reqwest::Client;
+use reqwest::Error as RequestError;
 
 #[derive(Debug)]
 pub enum GrnEnvError {
@@ -27,13 +27,14 @@ impl From<io::Error> for GrnEnvError {
     }
 }
 
-pub fn file_download<'a>(client: &'a Client,
-                         url: &str,
-                         mut base_dir: PathBuf,
-                         filename: &'a str)
-                         -> Result<PathBuf, GrnEnvError> {
-
-    let mut res = client.get(url)
+pub fn file_download<'a>(
+    client: &'a Client,
+    url: &str,
+    mut base_dir: PathBuf,
+    filename: &'a str,
+) -> Result<PathBuf, GrnEnvError> {
+    let mut res = client
+        .get(url)
         .header(Connection::close())
         .header(UserAgent::new(format!("grnenv-rs {}", crate_version!())))
         .send()?;
@@ -48,11 +49,9 @@ pub fn file_download<'a>(client: &'a Client,
     Ok(base_dir)
 }
 
-pub fn page_download<'a>(client: &'a Client,
-                         url: &str)
-                         -> Result<String, GrnEnvError> {
-
-    let mut res = client.get(url)
+pub fn page_download<'a>(client: &'a Client, url: &str) -> Result<String, GrnEnvError> {
+    let mut res = client
+        .get(url)
         .header(Connection::close())
         .header(UserAgent::new(format!("grnenv-rs {}", crate_version!())))
         .send()?;

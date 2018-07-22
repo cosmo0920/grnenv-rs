@@ -1,6 +1,6 @@
+use std::env;
 use std::fs;
 use std::path::{Path, PathBuf};
-use std::env;
 use std::process;
 use std::process::{Command, Stdio};
 
@@ -11,7 +11,8 @@ pub fn versions() {
     let groonga_versioned_dir = util::obtain_groonga_versioned_path();
     let paths = fs::read_dir(&Path::new(&groonga_versioned_dir)).unwrap();
 
-    let names = paths.filter_map(|entry| {
+    let names = paths
+        .filter_map(|entry| {
             entry.ok().and_then(|e| {
                 e.path()
                     .file_name()
@@ -24,9 +25,11 @@ pub fn versions() {
     println!("\tsystem");
     for entry in names {
         let e = entry.split("-").collect::<Vec<_>>();
-        println!("\t{} ({})",
-                 e.get(1).unwrap_or(&""),
-                 e.get(2).unwrap_or(&"build from source"));
+        println!(
+            "\t{} ({})",
+            e.get(1).unwrap_or(&""),
+            e.get(2).unwrap_or(&"build from source")
+        );
     }
 }
 
@@ -51,7 +54,8 @@ pub fn execute_external_command(cmd: &str, ext_m: &ArgMatches) {
         .args(&ext_args.as_slice()[0..])
         .stdout(Stdio::inherit())
         .stderr(Stdio::inherit())
-        .spawn() {
+        .spawn()
+    {
         Ok(_) => return (),
         Err(e) => e,
     };
@@ -78,5 +82,7 @@ fn is_executable<P: AsRef<Path>>(path: P) -> bool {
 }
 #[cfg(windows)]
 fn is_executable<P: AsRef<Path>>(path: P) -> bool {
-    fs::metadata(path).map(|metadata| metadata.is_file()).unwrap_or(false)
+    fs::metadata(path)
+        .map(|metadata| metadata.is_file())
+        .unwrap_or(false)
 }

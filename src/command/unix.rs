@@ -1,19 +1,19 @@
+use kuchiki;
+use num_cpus;
 use std::env;
 use std::fs;
 use std::io;
 use std::process;
 use std::process::{Command, Stdio};
-use num_cpus;
-use kuchiki;
 
-use clap::ArgMatches;
-use tempdir::TempDir;
-use reqwest::{Client, Proxy, Url};
-use config::Config;
-use extractor;
-use downloader;
-use profile;
 use build_conf;
+use clap::ArgMatches;
+use config::Config;
+use downloader;
+use extractor;
+use profile;
+use reqwest::{Client, Proxy, Url};
+use tempdir::TempDir;
 
 pub fn init() {
     let config = Config::new();
@@ -27,11 +27,14 @@ pub fn init() {
     if !env::home_dir()
         .unwrap_or_else(|| panic!("Cound not found homedir."))
         .join(".profile")
-        .exists() {
-        println!(r#"Write the following thing:
+        .exists()
+    {
+        println!(
+            r#"Write the following thing:
 
 . $HOME\.groonga\shims\bin\source-groonga.sh
-"#)
+"#
+        )
     }
 }
 
@@ -41,8 +44,10 @@ pub fn install(m: &ArgMatches) {
     const BASE_URL: &'static str = "http://packages.groonga.org/source/groonga";
     let maybe_proxy = env_proxy::for_url(&Url::parse(BASE_URL).unwrap());
     let config = Config::from_matches(m);
-    println!("Obtaining Groonga version: {}",
-             config.version.clone().unwrap());
+    println!(
+        "Obtaining Groonga version: {}",
+        config.version.clone().unwrap()
+    );
     let groonga_dir = format!("groonga-{}", config.version.unwrap());
     let groonga_source = format!("{}.tar.gz", groonga_dir.clone());
     if config.versions_dir.join(groonga_dir.clone()).exists() {
@@ -56,14 +61,17 @@ pub fn install(m: &ArgMatches) {
 
     let client = match maybe_proxy {
         None => Client::new(),
-        Some(_) => Client::builder().proxy(Proxy::http(BASE_URL).unwrap()).build()
+        Some(_) => Client::builder()
+            .proxy(Proxy::http(BASE_URL).unwrap())
+            .build()
             .expect("Could not create proxy."),
     };
-    let targz = downloader::file_download(&client,
-                                          &*format!("{}/{}", BASE_URL, groonga_source),
-                                          download_dir.clone(),
-                                          "groonga.tar.gz")
-        .expect("Failed to download");
+    let targz = downloader::file_download(
+        &client,
+        &*format!("{}/{}", BASE_URL, groonga_source),
+        download_dir.clone(),
+        "groonga.tar.gz",
+    ).expect("Failed to download");
     assert!(extractor::extract_targz(&targz, &download_dir).is_ok());
     assert!(env::set_current_dir(&download_dir.join(groonga_dir.clone())).is_ok());
 
@@ -117,9 +125,10 @@ pub fn install(m: &ArgMatches) {
         Ok(0)
     }
 
-    fn inner_configure(config: &Config,
-                       groonga_dir: String)
-                       -> Result<process::ExitStatus, io::Error> {
+    fn inner_configure(
+        config: &Config,
+        groonga_dir: String,
+    ) -> Result<process::ExitStatus, io::Error> {
         let args = build_conf::build_args(config, groonga_dir)?;
         let mut cmd = Command::new("./configure")
             .args(&*args)
@@ -132,8 +141,10 @@ pub fn install(m: &ArgMatches) {
     }
 
     fn inner_build() -> Result<process::ExitStatus, io::Error> {
-        let make = build_conf::make()
-            .ok_or(io::Error::new(io::ErrorKind::NotFound, "make kind command is not found"))?;
+        let make = build_conf::make().ok_or(io::Error::new(
+            io::ErrorKind::NotFound,
+            "make kind command is not found",
+        ))?;
         let mut cmd = Command::new(make)
             .args(&["-j", &*format!("{}", num_cpus::get())])
             .stdout(Stdio::inherit())
@@ -145,8 +156,10 @@ pub fn install(m: &ArgMatches) {
     }
 
     fn inner_install() -> Result<process::ExitStatus, io::Error> {
-        let make = build_conf::make()
-            .ok_or(io::Error::new(io::ErrorKind::NotFound, "make kind command is not found"))?;
+        let make = build_conf::make().ok_or(io::Error::new(
+            io::ErrorKind::NotFound,
+            "make kind command is not found",
+        ))?;
         let mut cmd = Command::new(make)
             .args(&["install"])
             .stdout(Stdio::inherit())
@@ -167,12 +180,11 @@ pub fn switch(m: &ArgMatches) {
             profile::unix::remove_grnenv_profile(&config.shim_dir).unwrap();
             return ();
         }
-        Some(_) => {
-            profile::unix::create_profile_source(&config.shim_dir,
-                                                 &groonga_dir,
-                                                 &config.versions_dir)
-                .expect("Could not create source-groonga.sh")
-        }
+        Some(_) => profile::unix::create_profile_source(
+            &config.shim_dir,
+            &groonga_dir,
+            &config.versions_dir,
+        ).expect("Could not create source-groonga.sh"),
         None => unreachable!(),
     }
 }
@@ -182,9 +194,13 @@ pub fn uninstall(m: &ArgMatches) {
     let mut choice = String::new();
     let groonga_dir = format!("groonga-{}", config.version.unwrap());
     if config.versions_dir.join(groonga_dir.clone()).exists() {
-        println!("Uninstall Groonga version {}? [y/N]",
-                 config.version.unwrap());
-        io::stdin().read_line(&mut choice).expect("Failed to read line");
+        println!(
+            "Uninstall Groonga version {}? [y/N]",
+            config.version.unwrap()
+        );
+        io::stdin()
+            .read_line(&mut choice)
+            .expect("Failed to read line");
         if choice == "y".to_owned() || choice == "Y".to_owned() {
             println!("Removing {}....", groonga_dir.clone());
             fs::remove_dir_all(&config.versions_dir.join(groonga_dir))
@@ -204,28 +220,37 @@ pub fn list() {
     let maybe_proxy = env_proxy::for_url(&Url::parse(base_url).unwrap());
     let client = match maybe_proxy {
         None => Client::new(),
-        Some(_) => Client::builder().proxy(Proxy::http(base_url).unwrap()).build()
+        Some(_) => Client::builder()
+            .proxy(Proxy::http(base_url).unwrap())
+            .build()
             .expect("Could not create proxy."),
     };
-    let page = downloader::page_download(&client,
-                                         &*format!("{}", base_url))
+    let page = downloader::page_download(&client, &*format!("{}", base_url))
         .expect("Failed to download page");
     let doc = kuchiki::parse_html().one(page);
-    let docs = doc.select("tr")
+    let docs = doc
+        .select("tr")
         .unwrap_or_else(|e| panic!("failed to find tr elements: {:?}", e))
         .collect::<Vec<_>>();
     println!("Installable Groonga:");
     for handle in &docs {
-        let texts = handle.as_node().descendants().text_nodes().collect::<Vec<_>>();
+        let texts = handle
+            .as_node()
+            .descendants()
+            .text_nodes()
+            .collect::<Vec<_>>();
         if let Some(text) = texts.first() {
             let package = text.as_node().text_contents();
-            if package.contains("groonga") && package.contains("zip") &&
-                !package.contains("asc") {
-                    let package = package.split(".zip").collect::<Vec<_>>();
-                    let pkg =
-                        package.first().unwrap_or(&"").to_owned().split("-").collect::<Vec<_>>();
-                    println!("\t{}", pkg.get(1).unwrap_or(&""));
-                }
+            if package.contains("groonga") && package.contains("zip") && !package.contains("asc") {
+                let package = package.split(".zip").collect::<Vec<_>>();
+                let pkg = package
+                    .first()
+                    .unwrap_or(&"")
+                    .to_owned()
+                    .split("-")
+                    .collect::<Vec<_>>();
+                println!("\t{}", pkg.get(1).unwrap_or(&""));
+            }
         }
     }
 }
